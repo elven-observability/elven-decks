@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Layout — cover</title>
+  <link rel="stylesheet" href="../themes/elven-deck.css" />
+</head>
+<body>
+  <div class="deck">
+    <section class="slide cover layout-cover">
+      <div>
+        <span class="eyebrow">Kontik|Zupper — Incidente 24h</span>
+        <h1 class="headline is-large">A virada das 14h aponta para o fluxo de pedido e pagamento.</h1>
+        <p class="subhead">Análise executiva de logs, métricas HTTP/Beyla, Redis e MySQL, entre 07/05/2026 20:00 e 08/05/2026 20:00, horário de Brasília.</p>
+      </div>
+
+      <div class="kpi-band">
+        <div class="item"><div class="value">13:47</div><div class="label">Último erro fatal observado em <code>ReservationQueueRetryLimiter</code></div></div>
+        <div class="item"><div class="value">10:00</div><div class="label">Início da escalada de retry, sustentada até 20:00</div></div>
+        <div class="item"><div class="value">~90%</div><div class="label">Janela de disco ocupado em <code>MYSQL-SERVER-01</code> às 01:00</div></div>
+        <div class="item"><div class="value">+92%</div><div class="label">Throughput estável vs 14h, na hora seguinte ao incidente</div></div>
+      </div>
+
+      <span class="footer-meta">Fonte: Loki ${env=prod}, Prometheus, audit logs. Analista: time PS Elven.</span>
+      <img class="logo-block" src="../assets/elven-logo.png" alt="Elven" />
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Layout — kpi-row</title>
+  <link rel="stylesheet" href="../themes/elven-deck.css" />
+</head>
+<body>
+  <div class="deck">
+    <section class="slide layout-kpi-row">
+      <span class="eyebrow">Métricas-chave</span>
+      <h1 class="headline">Quatro números que ancoram o resto da análise.</h1>
+
+      <div class="cards">
+        <div class="card-kpi">
+          <div class="value">13:47</div>
+          <div class="label">Último erro fatal</div>
+          <div class="desc"><code>ReservationQueueRetryLimiter</code>, antes da janela de recuperação.</div>
+        </div>
+        <div class="card-kpi">
+          <div class="value">10:00</div>
+          <div class="label">Início da escalada</div>
+          <div class="desc">Retry storm sustentado por mais de 10 horas.</div>
+        </div>
+        <div class="card-kpi">
+          <div class="value">~90%</div>
+          <div class="label">Disco ocupado</div>
+          <div class="desc"><code>MYSQL-SERVER-01</code> às 01:00 BRT.</div>
+        </div>
+        <div class="card-kpi">
+          <div class="value">+92%</div>
+          <div class="label">Throughput pós-14h</div>
+          <div class="desc">Reservas voltam ao nível pré-incidente.</div>
+        </div>
+      </div>
+
+      <img class="logo-block" src="../assets/elven-logo.png" alt="Elven" />
+    </section>
+  </div>
+</body>
+</html>

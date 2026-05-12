@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Layout — chart-and-cards</title>
+  <link rel="stylesheet" href="../themes/elven-deck.css" />
+</head>
+<body>
+  <div class="deck">
+    <section class="slide layout-chart-and-cards">
+      <div class="header">
+        <span class="eyebrow">Ponto de virada</span>
+        <h1 class="headline">Os erros fatais de pedido/pagamento caem na janela em que os indicadores de negócio voltam a subir.</h1>
+      </div>
+
+      <div class="chart">
+        <p class="chart-title">Erros críticos do caminho pedido/pagamento</p>
+        <img src="../assets/sample-chart-errors.svg" alt="Erros críticos por hora" />
+        <p class="chart-caption">O erro de <code>verifyPaymentFormByOrderId</code> aparece até 13:47:52 BRT e some na janela imediata pós-14h. Há recorrência menor mais tarde, o que indica mitigação, não causa encerrada.</p>
+      </div>
+
+      <div class="right">
+        <div class="card-compare is-bad">
+          <h3>payment_form_id</h3>
+          <p>O código espera string, mas alguns pedidos/reservas aéreas retornavam nulo.</p>
+        </div>
+        <div class="card-compare is-warn">
+          <h3>13:50</h3>
+          <p>Último <code>Payment CRITICAL</code> antes da janela de recuperação.</p>
+        </div>
+        <div class="card-compare is-good">
+          <h3>+31%</h3>
+          <p>Payment channel cresce de 205/h para 248/h na hora seguinte.</p>
+        </div>
+      </div>
+
+      <img class="logo-block" src="../assets/elven-logo.png" alt="Elven" />
+    </section>
+  </div>
+</body>
+</html>
