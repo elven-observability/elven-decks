@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Canvas size errado</title>
+  <style>
+    :root {
+      --w: 1920px;
+      --h: 1080px;
+      --teal: #00bfa5;
+    }
+    .slide {
+      width: var(--w);
+      height: var(--h);
+      counter-increment: slide;
+    }
+  </style>
+</head>
+<body>
+<div class="deck">
+  <section class="slide cover layout-cover">
+    <h1>Cover.</h1>
+  </section>
+  <section class="slide layout-closing">
+    <h1>Closing.</h1>
+  </section>
+</div>
+</body>
+</html>

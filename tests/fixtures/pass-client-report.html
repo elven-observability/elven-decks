@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kontik|Zupper — Incidente 24h</title>
+  <link rel="stylesheet" href="elven-deck.css" />
+</head>
+<body>
+<div class="deck">
+
+  <section class="slide cover layout-cover">
+    <div>
+      <span class="eyebrow">Kontik|Zupper — Incidente 24h</span>
+      <h1 class="headline is-large">A virada das 14h aponta para o fluxo de pedido e pagamento.</h1>
+      <p class="subhead">Análise executiva de logs e métricas entre 07/05 20:00 e 08/05 20:00 BRT.</p>
+    </div>
+    <div class="kpi-band">
+      <div class="item"><div class="value">13:47</div><div class="label">Último erro fatal</div></div>
+      <div class="item"><div class="value">10:00</div><div class="label">Início da escalada</div></div>
+      <div class="item"><div class="value">~90%</div><div class="label">Disco MySQL ocupado</div></div>
+      <div class="item"><div class="value">+92%</div><div class="label">Throughput pós-14h</div></div>
+    </div>
+    <span class="footer-meta">Fonte: Loki, Prometheus. PS Elven.</span>
+    <img class="logo-block" src="assets/elven-logo.png" alt="Elven" />
+  </section>
+
+  <section class="slide layout-executive-summary">
+    <span class="eyebrow">Resumo executivo</span>
+    <h1 class="headline">A melhora das vendas combina mais com desbloqueio de pedido/pagamento do que com normalização de infraestrutura.</h1>
+    <div class="cards">
+      <div class="card-info"><h3>1. Infra pressionada</h3><p>Disco MySQL ~90% e pico de conexões às 01:00 BRT.</p></div>
+      <div class="card-info"><h3>2. Negócio retoma antes</h3><p>Pós-14h, vendas sobem, banco continua alto.</p></div>
+      <div class="card-info"><h3>3. Ponto de virada</h3><p>Erro fatal em <code>payment_form_id</code> some na janela 14h-18h.</p></div>
+    </div>
+    <div class="callout-banner">
+      <span class="label">Leitura final:</span>
+      <p>combinação de pressão, retry storm e erro de dados; virada aponta pro 3º item.</p>
+    </div>
+    <span class="footer-meta">Período: 07/05 20:00 → 08/05 20:00 BRT.</span>
+    <img class="logo-block" src="assets/elven-logo.png" alt="Elven" />
+  </section>
+
+  <section class="slide layout-thesis-evidence">
+    <span class="eyebrow">Ponto de virada</span>
+    <h1 class="headline">Os erros fatais caem na janela em que indicadores de negócio voltam a subir.</h1>
+    <div class="cards">
+      <div class="card-compare is-bad"><h3>payment_form_id</h3><p>Código espera string; chegava nulo.</p></div>
+      <div class="card-compare is-warn"><h3>13:50</h3><p>Último Payment CRITICAL relevante.</p></div>
+      <div class="card-compare is-good"><h3>+31%</h3><p>Payment channel cresce 205→248/h.</p></div>
+    </div>
+    <img class="logo-block" src="assets/elven-logo.png" alt="Elven" />
+  </section>
+
+  <section class="slide layout-chart-and-cards">
+    <div class="header">
+      <span class="eyebrow">Erros críticos</span>
+      <h1 class="headline">verifyPayment e Payment CRITICAL caem após 14h.</h1>
+    </div>
+    <div class="chart">
+      <p class="chart-title">Erros críticos por hora</p>
+      <img src="assets/sample-chart-errors.svg" alt="Erros por hora" />
+      <p class="chart-caption">verifyPaymentFormByOrderId desaparece pós-14h; recorrência menor depois.</p>
+    </div>
+    <div class="right">
+      <div class="card-compare is-bad"><h3>payment_form_id</h3><p>Espera string; chegava nulo em reservas aéreas.</p></div>
+      <div class="card-compare is-warn"><h3>13:50</h3><p>Último CRITICAL relevante.</p></div>
+      <div class="card-compare is-good"><h3>+31%</h3><p>Payment channel cresce.</p></div>
+    </div>
+    <img class="logo-block" src="assets/elven-logo.png" alt="Elven" />
+  </section>
+
+  <section class="slide layout-code-and-callout">
+    <div class="header">
+      <span class="eyebrow">Inspeção read-only</span>
+      <h1 class="headline">O wrapper de retry decide com base em deadline e Redis.</h1>
+    </div>
+<pre class="code-panel">shouldAllowAnotherRequeue(orderId)
+  se deadline ausente   -&gt; cria janela
+  se race/Redis nao confirma -&gt; loga warning
+  retorno: true</pre>
+    <div class="callout-banner">
+      <span class="label">Interpretação:</span>
+      <p>falha aberta; pode reprocessar e disputar MySQL/Redis com operações reais.</p>
+    </div>
+    <span class="footer-meta">LogQL: channel=ReservationQueueRetryLimiter. Read-only.</span>
+    <img class="logo-block" src="assets/elven-logo.png" alt="Elven" />
+  </section>
+
+  <section class="slide layout-closing">
+    <span class="eyebrow">Fechamento</span>
+    <h1 class="headline is-large">A virada das 14h é mais sobre desbloqueio do que sobre infra zerar.</h1>
+    <div class="takeaways">
+      <div class="takeaway">Pressão real de banco/disco entre 22h-08h.</div>
+      <div class="takeaway">Retry storm sustentado, não é a causa única.</div>
+      <div class="takeaway">Erro fatal em payment_form_id some na virada.</div>
+      <div class="takeaway">+31% Payment channel após 14h confirma o ponto.</div>
+    </div>
+    <div class="next"><strong>Próximo:</strong> patch em payment_form_id + investigar pressão de disco MySQL.</div>
+    <img class="logo-block" src="assets/elven-logo.png" alt="Elven" />
+  </section>
+
+</div>
+</body>
+</html>
