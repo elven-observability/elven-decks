@@ -128,11 +128,14 @@ img.logo-block { width: 92px; height: auto; }
   line-height: 1.12;
   letter-spacing: -0.01em;
   margin: 16px 0 0;
-  max-width: 1040px;
+  max-width: 950px;          /* reserva ~140px à direita pro .logo-block (92px) + gap */
   color: inherit;
 }
-.headline.is-large { font-size: 56px; }
+.headline.is-large { font-size: 56px; max-width: 1040px; }
 .headline.is-small { font-size: 36px; }
+/* Cover e closing podem usar largura cheia — logo fica no canto, separado do bloco */
+.layout-cover .headline,
+.layout-closing .headline { max-width: 1040px; }
 
 .subhead {
   font-size: 18px;
@@ -325,8 +328,16 @@ code, .mono { font-family: var(--font-mono); }
 }
 
 /* 06 — chart-and-cards */
-.layout-chart-and-cards { display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; align-items: start; padding-top: 120px; }
-.layout-chart-and-cards .header { grid-column: 1 / -1; margin-top: -52px; margin-bottom: 6px; }
+.layout-chart-and-cards {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 28px;
+  row-gap: 20px;
+  align-items: start;
+}
+.layout-chart-and-cards .header { grid-column: 1 / -1; }
+.layout-chart-and-cards .header .headline { max-width: 950px; font-size: 32px; line-height: 1.18; margin-top: 12px; }
 .layout-chart-and-cards .chart {
   background: var(--white);
   border: 1px solid var(--line);
@@ -357,8 +368,16 @@ code, .mono { font-family: var(--font-mono); }
 .layout-chart-full .footnote { font-size: 12px; color: var(--muted-strong); margin-top: 12px; }
 
 /* 08 — code-and-callout */
-.layout-code-and-callout { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; row-gap: 18px; padding-top: 100px; }
-.layout-code-and-callout .header { grid-column: 1 / -1; margin-top: -36px; }
+.layout-code-and-callout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 28px;
+  row-gap: 28px;
+  align-items: start;
+}
+.layout-code-and-callout .header { grid-column: 1 / -1; }
+.layout-code-and-callout .header .headline { max-width: 950px; }
 .layout-code-and-callout .code-panel { align-self: start; }
 .layout-code-and-callout .callout-banner { align-self: start; margin-top: 0; }
 

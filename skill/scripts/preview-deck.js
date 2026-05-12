@@ -83,16 +83,10 @@ async function main() {
       );
       const elem = handle.asElement();
       if (!elem) continue;
-      await elem.scrollIntoView();
-      const box = await elem.boundingBox();
-      if (!box) continue;
       const n = String(i + 1).padStart(2, "0");
       const outFile = path.join(outDir, `slide-${n}.png`);
-      await page.screenshot({
-        path: outFile,
-        clip: { x: box.x, y: box.y, width: box.width, height: box.height },
-        omitBackground: false,
-      });
+      // Element-scoped screenshot: positions correctly regardless of scroll.
+      await elem.screenshot({ path: outFile, omitBackground: false });
       slideFiles.push(outFile);
       process.stdout.write(`  -> ${outFile}\n`);
     }
