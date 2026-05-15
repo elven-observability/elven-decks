@@ -92,6 +92,18 @@ body { counter-reset: slide; }
 .logo-block img, .logo-block svg { display: block; width: 100%; height: auto; }
 img.logo-block { width: 92px; height: auto; }
 
+/* Logo fica branco automaticamente em fundo escuro (cover + dark slides).
+ * O PNG canônico tem wordmark verde-escuro; sobre gradiente teal/ink ele some.
+ * brightness(0) invert(1) = logo 100% branco. split-dark mantém logo colorido
+ * porque o canto superior direito cai no lado paper (claro). */
+.slide.cover .logo-block,
+.slide.dark .logo-block {
+  filter: brightness(0) invert(1);
+}
+/* Escape hatch manual: força branco em qualquer slide, se precisar. */
+.logo-block.on-dark { filter: brightness(0) invert(1); }
+.logo-block.on-light { filter: none; }
+
 .footer-meta {
   position: absolute;
   left: var(--pad-x);
