@@ -7,7 +7,13 @@ Versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
-## [0.1.0] — 2026-05-12
+## [0.1.1] — 2026-05-15
+
+Primeiro release público. A versão `0.1.0` foi queimada no registro npm (publicada e despublicada — o npm reserva números de versão permanentemente), então o primeiro release instalável é o `0.1.1`. Inclui também o fix de contraste do logo em fundo escuro.
+
+### Fixed
+
+- Logo fica branco automaticamente em `.slide.cover` e `.slide.dark` via `filter: brightness(0) invert(1)` — antes o wordmark verde-escuro sumia no gradiente da capa. Escape hatch manual: `.logo-block.on-dark` / `.on-light`.
 
 ### Added
 
