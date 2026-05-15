@@ -100,8 +100,10 @@ Format: `01, 02, 03 … 99`. Posição: bottom-right do slide, cor `--muted` em 
 - Sempre canto superior direito.
 - Classe `.logo-block`.
 - Largura: 92px.
-- Arquivo canônico: `skill/assets/elven-logo.png`.
-- Em variantes `.dark` e `.cover`, o logo é o mesmo PNG; ele tem branco semitransparente integrado.
+- Arquivo canônico: `skill/assets/elven-logo.png` — lockup vertical (ícone gradiente + wordmark "elven" em verde-escuro), fundo transparente.
+- **Em slide light**: logo colorido, como é o PNG.
+- **Em `.slide.cover` e `.slide.dark`**: o CSS aplica `filter: brightness(0) invert(1)` automaticamente → logo 100% branco. Não precisa trocar de arquivo nem de classe; é automático pela variante do slide.
+- **Escape hatch manual**: `.logo-block.on-dark` força branco; `.logo-block.on-light` força colorido. Use só em casos de borda (ex: logo sobre card escuro num slide light).
 
 ---
 
