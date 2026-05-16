@@ -1,33 +1,31 @@
-# Brand tokens (locked, v0.1.0)
+# Brand tokens (locked)
 
-Esses tokens são **imutáveis** na v0.1.0 do skill. Vivem em `themes/elven-deck.css` no `:root`. Qualquer drift falha o lint (regra L3).
+Tokens **imutáveis** do tema. Vivem em `themes/elven-deck.css` no `:root`. Drift de cor/fonte falha o lint (regra L3).
 
-**Fonte canônica de cor**: extraído do HTML `kontik-zupper-incident-24h.html` (8 maio 2026). Eu não inventei nada — espelha o brand que já foi usado em deck real, aprovado, entregue ao cliente.
+**Fonte canônica**: extraído verbatim do deck aprovado `kontik-zupper-incident-24h.html` — entregue a cliente real. Não foi inventado.
 
 ---
 
 ## Paleta
 
-| Token | Valor | Uso operacional |
+| Token | Valor | Uso |
 |---|---|---|
-| `--ink` | `#0f1923` | texto principal sobre paper, fundo de cards dark |
-| `--ink-2` | `#142638` | variante mais clara do ink (raro) |
-| `--paper` | `#f4f7f8` | bg do slide light (padrão) |
-| `--white` | `#ffffff` | bg de card sobre paper, texto sobre dark |
-| `--muted` | `#64748b` | metadata, footer, page number, support |
-| `--muted-strong` | `#475569` | subhead, secondary text com mais contraste |
-| `--teal` | `#00bfa5` | accent primário — eyebrow, callout bar, KPI positivo, pill |
-| `--teal-2` | `#00897b` | accent escuro — gradient cover, hover, "resolvido" timeline |
-| `--cyan` | `#00e5ff` | accent secundário — radial cover, badges raros |
-| `--blue` | `#0d47a1` | gradient cover, citação raríssima |
-| `--lime` | `#d7ff63` | highlight raro (cover radial) |
-| `--red` | `#ff5252` | alerta, erro, KPI negativo, top-accent card "is-bad" |
-| `--amber` | `#fbbf24` | warning, KPI atenção, top-accent card "is-warn" |
-| `--violet` | `#7c3aed` | accent extra (raro, secondary line em chart) |
-| `--line` | `rgba(15,25,35,0.14)` | borda fina padrão de card |
-| `--line-strong` | `rgba(15,25,35,0.22)` | borda mais visível (raro) |
+| `--ink` | `#0f1923` | texto principal; fundo de `slide dark` |
+| `--ink-2` | `#142638` | variante do ink (raro) |
+| `--paper` | `#f4f7f8` | fundo do slide light (padrão) |
+| `--white` | `#ffffff` | fundo de card; texto sobre dark |
+| `--muted` | `#64748b` | metadata, numeração, `.source` |
+| `--teal` | `#00bfa5` | accent primário — kicker (light), callout, tag, marcador |
+| `--teal-2` | `#00897b` | teal escuro — kicker, gradiente da capa, `.arrow` |
+| `--cyan` | `#00e5ff` | accent secundário — radial da capa |
+| `--blue` | `#0d47a1` | gradiente da capa; série de gráfico |
+| `--lime` | `#d7ff63` | kicker em slide dark/cover; marcador de takeaway dark |
+| `--red` | `#ff5252` | erro, alerta, `.hot`, `.risk.high` |
+| `--amber` | `#fbbf24` | atenção, `.warn` |
+| `--violet` | `#7c3aed` | série extra de gráfico (raro) |
+| `--line` | `rgba(15,25,35,0.14)` | borda fina de card |
 
-**Regra de uso**: teal é o accent. Vermelho e amarelo são reservados para semântica negativa/atenção em KPIs e cards `is-bad`/`is-warn`. Não use vermelho/amarelo decorativo.
+**Regra de uso**: teal é o accent. Vermelho/âmbar são reservados para semântica negativa/atenção (`.hot`, `.warn`, `.risk`). Nunca decorativo.
 
 ---
 
@@ -38,39 +36,30 @@ Esses tokens são **imutáveis** na v0.1.0 do skill. Vivem em `themes/elven-deck
 --font-mono: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
 ```
 
-System fallback intencional — **sem `@font-face`** em v0.1.0. Inter e IBM Plex Mono são fontes free; se cliente exige lockdown de internet, self-host vira v0.2 (issue aberta).
+System fallback intencional — sem `@font-face`. Inter e IBM Plex Mono são free; self-host é roadmap se algum cliente exigir lockdown de rede.
 
-**Pesos usados**:
+**Tamanhos canônicos** (no CSS — não improvise):
 
-- Headline: **800** (bold)
-- Subhead, body: **400** (regular)
-- Eyebrow, labels, pill-chip: **600** (semibold)
-- Card titles (h3): **700**
-
-**Tamanhos canônicos** (em `.css`, não improvise):
-
-| Token visual | Tamanho | Linha-altura |
+| Elemento | Tamanho | Peso |
 |---|---|---|
-| `.headline.is-large` | 56px | 1.12 |
-| `.headline` (default) | 44px | 1.12 |
-| `.headline.is-small` | 36px | 1.12 |
-| `.subhead` | 18px | 1.5 |
-| Card `h3` | 17-18px | 1.3 |
-| Card body | 13px | 1.5 |
-| `.eyebrow` | 12px | normal, letter-spacing 0.18em |
-| `.footer-meta`, `.page-number` | 11px | normal |
-| Code panel | 13px | 1.55 |
-| Section big-number | 168px | 1 |
+| `h1` (capa) | 68px | 900 |
+| `h2` (demais) | 42px | 900 |
+| `h3` (card) | 20px | 850 |
+| `.sub` | 22px | 400 |
+| `.light-sub` | 18px | 400 |
+| `.kicker` | 12px | 800, letter-spacing 3px |
+| `.metric .value` | 34px | 900 |
+| `.evidence .big` / `.tl-time` | 30 / 26px | 900 |
+| `.code` / `.mono` | 12px / 0.9em | mono |
+| `.source` | 10px | 400 |
 
 ---
 
 ## Frame
 
-- Slide canvas: **1280×720** exato (16:9). Hard-coded em `.slide { width: var(--w); height: var(--h); }`.
-- Padding interno default: **64px vertical / 72px horizontal** (`--pad-y`, `--pad-x`).
-- Layout `cover` usa 80/88 (overrides) por respiração.
-
-**Numeração de páginas**:
+- Canvas: **1280×720** exato (16:9). `.slide { width: var(--w); height: var(--h) }`.
+- Moldura editorial: `.content { position: absolute; inset: 52px 72px 54px 72px }`. Todo conteúdo mora aqui (exceto `.logo`, `.metric-rail`, `.source`).
+- Numeração automática:
 
 ```css
 body { counter-reset: slide; }
@@ -78,35 +67,35 @@ body { counter-reset: slide; }
 .slide::after { content: counter(slide, decimal-leading-zero); }
 ```
 
-Format: `01, 02, 03 … 99`. Posição: bottom-right do slide, cor `--muted` em light, branco 60% em dark/cover.
+Formato `01, 02 … 99`, canto inferior direito. Cor `--muted` em light, branco translúcido em dark/cover.
 
-**Page break**: cada `.slide` força `page-break-after: always` e `break-after: page` pra PDF print clean.
+- Page break: cada `.slide` força `page-break-after: always` para o PDF.
 
 ---
 
-## Variantes de fundo (`.slide` modifiers)
+## Variantes de slide
 
-| Class | Background | Texto | Quando usar |
+| Classe | Fundo | Texto | Quando |
 |---|---|---|---|
-| `.slide` (default) | `--paper` `#f4f7f8` | `--ink` | maioria absoluta dos slides |
-| `.slide.dark` | `#0f1923` | branco | layouts `architecture`, `flow`; section openers temáticos |
-| `.slide.cover` | gradient teal→blue + radials | branco | slide 01 SEMPRE |
-| `.slide.split-dark` | gradient 48/52 dark→paper | dark side branco / paper side ink | section opener premium (raro) |
+| `slide` | `--paper` | `--ink` | padrão — maioria dos slides |
+| `slide dark` | `#0f1923` | branco | timeline, diagrama, fechamento de impacto |
+| `slide cover` | gradiente teal→blue + radiais | branco | slide 01 SEMPRE |
+| `slide split-dark` | 48/52 dark→paper | misto | comparação lado a lado (raro) |
 
 ---
 
 ## Logo
 
-- Sempre canto superior direito.
-- Classe `.logo-block`.
-- Largura: 92px.
-- Arquivo canônico: `skill/assets/elven-logo.png` — lockup vertical (ícone gradiente + wordmark "elven" em verde-escuro), fundo transparente.
-- **Em slide light**: logo colorido, como é o PNG.
-- **Em `.slide.cover` e `.slide.dark`**: o CSS aplica `filter: brightness(0) invert(1)` automaticamente → logo 100% branco. Não precisa trocar de arquivo nem de classe; é automático pela variante do slide.
-- **Escape hatch manual**: `.logo-block.on-dark` força branco; `.logo-block.on-light` força colorido. Use só em casos de borda (ex: logo sobre card escuro num slide light).
+- Sempre canto superior direito. Classe `.logo`. Largura **104px**.
+- Arquivo canônico: `assets/elven-logo.png` — lockup vertical (ícone gradiente + wordmark "elven" em verde-escuro), fundo transparente.
+- **Slide light**: logo colorido (como o PNG é).
+- **`slide cover` e `slide dark`**: o CSS aplica `filter: brightness(0) invert(1)` automaticamente → logo 100% branco. Automático pela variante; não troca de arquivo.
+- **Declaração explícita recomendada**: use `class="logo on-dark"` em slides dark/cover por clareza de leitura do HTML.
+- **Escape hatch**: `.logo.on-dark` força branco, `.logo.on-light` força colorido — para casos de borda.
+- Lint L9 exige `.logo` em **todo** slide.
 
 ---
 
-## Layouts que **não** podem ser alterados
+## O que não pode ser alterado
 
-Os 12 layouts em `themes/elven-deck.css` (`.layout-*`) são parte deste contrato. Não duplicar, não improvisar variações. Se um deck precisa de algo novo, abre issue antes.
+Paleta, fontes, frame 1280×720, numeração, e o conjunto de componentes em `themes/elven-deck.css` são o contrato visual. Não duplique, não improvise variações. Precisa de algo novo? Abra issue antes.

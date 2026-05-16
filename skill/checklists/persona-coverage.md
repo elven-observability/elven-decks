@@ -19,7 +19,7 @@ Sanity-check: o deck está endereçando o **leitor certo**? Use antes do pre-del
 
 - [ ] Slide 01 e 02 entendíveis sem contexto técnico profundo?
 - [ ] Métricas têm fonte declarada (não só "vimos que...")?
-- [ ] Conclusão clara no `.layout-closing`?
+- [ ] Conclusão clara no slide de fechamento?
 - [ ] Linguagem em pt-BR direto, sem jargão SRE excessivo?
 
 ### `cliente-eng`

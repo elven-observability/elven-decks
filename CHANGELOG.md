@@ -9,27 +9,31 @@ Versioning: [SemVer](https://semver.org/).
 
 ## [0.1.1] — 2026-05-15
 
-Primeiro release público. A versão `0.1.0` foi queimada no registro npm (publicada e despublicada — o npm reserva números de versão permanentemente), então o primeiro release instalável é o `0.1.1`. Inclui também o fix de contraste do logo em fundo escuro.
+Primeiro release público. A versão `0.1.0` foi queimada no registro npm (publicada e despublicada — o npm reserva números de versão permanentemente), então o primeiro release instalável é o `0.1.1`.
 
-### Fixed
+### Sistema visual — modelo de composição kontik
 
-- Logo fica branco automaticamente em `.slide.cover` e `.slide.dark` via `filter: brightness(0) invert(1)` — antes o wordmark verde-escuro sumia no gradiente da capa. Escape hatch manual: `.logo-block.on-dark` / `.on-light`.
+O tema reproduz verbatim o sistema visual do deck aprovado `kontik-zupper-incident-24h`. **Não há "layout fixo por slide"**: cada slide é uma variante (`light` / `dark` / `cover` / `split-dark`) com uma moldura `.content`, dentro da qual se compõem componentes do tema.
 
 ### Added
 
-- Two canonical templates: `client-report-deck` (kontik-style — slides PDF entregues ao cliente, sem presenter) and `workshop-mentorship-deck` ("Observability: From Zero to Hero" style — mentoria multi-dia com speaker notes + labs + agenda).
-- 12 locked layout classes: `layout-cover`, `layout-section-opener`, `layout-executive-summary`, `layout-thesis-evidence`, `layout-kpi-row`, `layout-chart-and-cards`, `layout-chart-full`, `layout-code-and-callout`, `layout-bullets-3`, `layout-timeline`, `layout-architecture`, `layout-closing`.
-- Single `themes/elven-deck.css` com brand tokens extraídos do PDF `kontik-zupper-incident-24h.pdf` (8 maio 2026): paleta (teal `#00bfa5`, paper `#f4f7f8`, ink `#0f1923`, ...), tipografia (Inter + IBM Plex Mono via system fallback), frame 1280×720, numeração CSS counter `decimal-leading-zero`.
-- Atomic components: `.eyebrow`, `.headline`, `.subhead`, `.callout-banner`, `.code-panel`, `.pill-chip`, `.card-{fact,info,compare,step,kpi}`, `.logo-block`, `.footer-meta`.
-- Binary lint with 10 rules (`decks-skill lint`): DOCTYPE+lang, `<title>`, theme imported, `.slide` markup, canvas 1280×720, canonical layout class per slide, cover-first, closing-last, CSS counter, no emoji in visible body.
-- Puppeteer render to PDF (`decks-skill render`): 1280×720, 1 page per slide, print backgrounds, no margins.
-- Puppeteer preview to PNGs + contact-sheet (`decks-skill preview`).
-- Scaffold command (`decks-skill new client-report|workshop <slug>`).
-- Install flow parity with `@elven-observability/docs-skill`: `npm i -g … && decks-skill install` copies `skill/*` to `~/.claude/skills/decks-skill/`.
-- 8 reference docs: `brand-tokens`, `layout-catalog`, `component-catalog`, `editorial-voice`, `artifact-contract`, `quality-gate`, `speaker-notes-spec`, `glossary`.
+- Dois templates canônicos: `client-report-deck` (slides PDF entregues ao cliente, sem presenter) e `workshop-mentorship-deck` (mentoria multi-dia com speaker notes + labs + agenda).
+- `themes/elven-deck.css` — sistema visual locked: paleta (teal `#00bfa5`, paper `#f4f7f8`, ink `#0f1923`, …), Inter + IBM Plex Mono via system fallback, frame 1280×720, numeração CSS counter `decimal-leading-zero`.
+- Componentes: `.kicker`, `.sub`/`.light-sub`/`.mono`, `.metric-rail`, `.two-col`/`.three-col`/`.score-grid`, `.panel`, `.chart-card`/`.chart`/`.note`, `.timeline`/`.tl-item`, `.callout`, `.evidence`/`.evidence-row`, `.matrix`, `.code`, `.diagram`/`.node`/`.arrow`, `.decision`, `.takeaways`, `.tag`.
+- `themes/elven-deck-charts.js` — motor de gráficos SVG data-driven (`ElvenDeck.lineChart` / `barChart`).
+- Lint binário 10 regras (`decks-skill lint`): L1 DOCTYPE+lang pt-BR, L2 `<title>`, L3 tema, L4 `.slide`, L5 canvas 1280×720, L6 slide 01 = `cover`, L7 `.content` em todo slide, L8 `.kicker` em todo slide, L9 `.logo` em todo slide, L10 sem emoji.
+- Render PDF (`decks-skill render`): Puppeteer, 1280×720, 1 página/slide, print backgrounds.
+- Preview PNG + contact-sheet (`decks-skill preview`): 1.5× (1920×1080).
+- Scaffold (`decks-skill new client-report|workshop <slug>`).
+- Install parity com `@elven-observability/docs-skill`.
+- 8 docs de referência: `brand-tokens`, `slide-recipes`, `component-catalog`, `editorial-voice`, `artifact-contract`, `quality-gate`, `speaker-notes-spec`, `glossary`.
 - 3 checklists: `pre-deliver`, `visual-qa`, `persona-coverage`.
-- 8 lint fixtures (2 pass + 6 fail) com mensagens de erro específicas.
-- Tests: `lint.test.sh`, `render-pdf.test.sh`, `preview.test.sh`.
+- 8 fixtures de lint (2 pass + 6 fail) + test runners.
+
+### Fixed
+
+- Logo branco automático em `slide cover`/`slide dark` via `filter: brightness(0) invert(1)` — o wordmark verde-escuro sumia no fundo escuro.
+- Cards brancos (`.panel`, `.evidence`, `.node`, `.decision`) mantêm texto escuro mesmo em `slide dark` — antes o `h3` herdava branco e o título sumia (branco-no-branco).
 
 ### Not in scope (deferred to v0.2+)
 

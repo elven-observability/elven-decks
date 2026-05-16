@@ -21,10 +21,11 @@ Antes de mandar ao cliente / palco. Bata item a item, sem pular. Se algum item n
 - [ ] Contact-sheet (`decks-skill preview`) revisado, sem overflow visual
 - [ ] Numeração de página presente e legível em todos os slides
 - [ ] Logo Elven no canto superior direito em todos os slides
-- [ ] Slide 01 é `.layout-cover` (gradient teal/blue)
-- [ ] Último slide é `.layout-closing` (takeaways + bloco "Próximo")
+- [ ] Slide 01 é `class="slide cover"` (gradiente teal/blue)
+- [ ] Último slide é o fechamento (`.takeaways` + callout de próximo passo)
+- [ ] Todo slide tem `.logo`, `.content` e `.kicker`
 - [ ] Cores teal/red/amber só usadas onde semântica permite (sem decorativo aleatório)
-- [ ] Nenhum emoji no corpo visível do deck (use `.pill-chip` se precisar de badge)
+- [ ] Nenhum emoji no corpo visível do deck (use `.tag` se precisar de badge)
 
 ## Acessibilidade
 

@@ -23,11 +23,11 @@ Pacote = **uma pasta** com o deck + suporte mínimo. Sem speaker notes, sem labs
 
 ### Conteúdo obrigatório do HTML
 
-- Slide 01 = `.layout-cover` com eyebrow `<CLIENTE>|<SUBCLIENTE> — <CONTEXTO>`.
-- Slide 02 = `.layout-executive-summary` OU `.layout-thesis-evidence`.
-- Slide final = `.layout-closing` com 3-5 takeaways + bloco `.next`.
-- Toda métrica numérica tem fonte declarada em `.footer-meta` OU em `source-notes.md`.
-- Toda inspeção de código declara "read-only" em `.footer-meta`.
+- Slide 01 = `class="slide cover"` com kicker `<CLIENTE>|<SUBCLIENTE> — <CONTEXTO>` (receita R1).
+- Slide 02 = resumo executivo (receita R2: `three-col` de `.panel` + `.callout`).
+- Slide final = fechamento (receita R9: `.takeaways` + `.callout` de próximo passo).
+- Toda métrica numérica tem fonte declarada em `.source` OU em `source-notes.md`.
+- Toda inspeção de código declara "read-only" em `.source`.
 
 ### `source-notes.md` — estrutura mínima
 
@@ -187,8 +187,8 @@ Se o slide diz uma coisa e o lab diz outra, o pacote **não está pronto**.
 Os dois tipos compartilham:
 
 - **Brand visual** (tokens em `brand-tokens.md`)
-- **12 layouts canônicos** (`layout-catalog.md`)
-- **Componentes atômicos** (`component-catalog.md`)
+- **Receitas de slide** (`slide-recipes.md`)
+- **Componentes do tema** (`component-catalog.md`)
 - **Editorial voice** (`editorial-voice.md`)
 - **Lint binário** (10 regras, todas aplicáveis)
 

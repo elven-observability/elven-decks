@@ -19,7 +19,7 @@ Roda **DEPOIS de `decks-skill preview`** com o `contact-sheet.png` aberto. Não 
 
 - [ ] Texto branco sobre fundo claro? **Erro** — só permitido em `.slide.dark` ou `.slide.cover`
 - [ ] Texto cinza médio (muted) sobre cinza claro? Verificar legibilidade — re-skin pra `--muted-strong` se duvidoso
-- [ ] Teal usado só como accent (eyebrow, callout, pill-chip is-good, KPI positivo, card top-accent is-good)
+- [ ] Teal usado só como accent (kicker, callout, tag, KPI, KPI positivo, card top-accent is-good)
 - [ ] Red usado só pra semântica negativa (KPI negativo, card is-bad, alerta)
 - [ ] Amber só pra warning (KPI atenção, card is-warn)
 - [ ] Sem teal/red/amber decorativo aleatório
@@ -39,18 +39,18 @@ Roda **DEPOIS de `decks-skill preview`** com o `contact-sheet.png` aberto. Não 
 - [ ] Headline (`.is-large`) ocupa máximo 4 linhas
 - [ ] KPI band (se presente) com 4 items, valores legíveis em branco
 - [ ] Logo Elven canto superior direito
-- [ ] `.footer-meta` no canto inferior esquerdo se há fonte/autor a declarar
+- [ ] `.source` no canto inferior esquerdo se há fonte/autor a declarar
 
 ## Closing (último slide)
 
-- [ ] Layout `.layout-closing`
+- [ ] Slide de fechamento: `.takeaways` + callout de próximo passo
 - [ ] Takeaways em grid 2-col, 3-6 items
 - [ ] Bloco `.next` presente com `<strong>Próximo:</strong>` teal
 - [ ] Headline `.is-large` curto e memorável
 
 ## Logo e numeração
 
-- [ ] `.logo-block` no canto superior direito em **todo** slide
+- [ ] `.logo` no canto superior direito em **todo** slide
 - [ ] Page number `01, 02, …` no canto inferior direito em **todo** slide
 - [ ] Page number visível em slides dark/cover (cinza claro semitransparente)
 

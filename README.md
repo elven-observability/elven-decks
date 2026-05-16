@@ -15,7 +15,7 @@ Um pacote npm que instala um *skill* no Claude Code. Depois de instalado, qualqu
 - [Instalação](#instalação)
 - [Seu primeiro deck, passo a passo](#seu-primeiro-deck-passo-a-passo)
 - [Os 2 tipos de deck](#os-2-tipos-de-deck)
-- [Os 12 layouts](#os-12-layouts)
+- [Como montar um slide](#como-montar-um-slide)
 - [Todos os comandos](#todos-os-comandos)
 - [Como o lint funciona](#como-o-lint-funciona)
 - [Usando com o Claude Code (agente IA)](#usando-com-o-claude-code-agente-ia)
@@ -44,7 +44,7 @@ decks-skill preview deck.html    # gera PNGs pra revisar
 decks-skill render deck.html     # gera o PDF final
 ```
 
-Pronto. Você tem um PDF 1280×720 no padrão visual da Elven, com paleta, fontes, logo, numeração e layout travados.
+Pronto. Você tem um PDF 1280×720 no padrão visual da Elven, com paleta, fontes, logo e numeração travados.
 
 ---
 
@@ -54,8 +54,8 @@ Antes: cada pessoa montava deck do seu jeito. Cores diferentes, fontes diferente
 
 Depois: **um padrão, codificado em código.**
 
-- A paleta, as fontes e o frame 16:9 vêm de um CSS único e travado (`elven-deck.css`), extraído de um deck real aprovado (o PDF de incidente do cliente kontik).
-- Você escolhe entre **12 layouts canônicos** — e só. Sem inventar slide novo no meio do caminho.
+- A paleta, as fontes e o frame 16:9 vêm de um CSS único e travado (`elven-deck.css`), extraído de um deck real aprovado (o deck de incidente do cliente kontik).
+- Você **compõe** cada slide com um conjunto fechado de componentes testados — sem inventar CSS no meio do caminho.
 - Um **lint binário** roda 10 verificações estruturais. Se algo fugiu do padrão, ele reprova **antes** de chegar no cliente.
 - O **render** transforma o HTML em PDF com Puppeteer — mesma saída em qualquer máquina.
 
@@ -123,9 +123,9 @@ kontik-incidente-2026-05-08/
 
 ### 3. Edite o `deck.html`
 
-Abra o `deck.html`. Ele já tem 3 slides válidos (capa, resumo executivo, fechamento) e, em comentários, os outros 9 layouts prontos pra descomentar. Cada slide é uma `<section class="slide layout-XXX">`.
+Abra o `deck.html`. Ele já vem com 5 slides válidos que cobrem as receitas mais comuns (capa, resumo executivo, linha do tempo, gráfico + evidências, fechamento). Cada slide é uma `<section class="slide">` com `.content` dentro.
 
-Precisa saber qual layout usar? Veja [Os 12 layouts](#os-12-layouts) abaixo, ou abra `~/.claude/skills/decks-skill/reference/layout-catalog.md`.
+Precisa de outra composição? Veja [Como montar um slide](#como-montar-um-slide) abaixo, ou abra `~/.claude/skills/decks-skill/reference/slide-recipes.md`.
 
 ### 4. Rode o lint
 
@@ -180,28 +180,44 @@ Os dois usam **exatamente o mesmo contrato visual**. O que muda são os artefato
 
 ---
 
-## Os 12 layouts
+## Como montar um slide
 
-Cada slide do seu deck recebe **uma** classe `.layout-*`. Não existe layout fora dessa lista.
+Não existe "layout fixo". Cada slide é uma **variante** com uma **moldura** (`.content`) onde você **compõe** componentes. Toda a flexibilidade do kontik, sem improviso.
 
-| Layout | Pra que serve |
+**A moldura — igual em todo slide** (o lint exige):
+
+```html
+<section class="slide">           <!-- ou: slide dark | slide cover | slide split-dark -->
+  <img class="logo" src="assets/elven-logo.png" alt="Elven" />
+  <div class="content">
+    <div class="kicker">Categoria do slide</div>
+    <h2>Headline que diz a tese.</h2>
+    <!-- componha aqui -->
+  </div>
+  <div class="source">Fonte / metodologia.</div>
+</section>
+```
+
+**Componentes pra compor dentro do `.content`:**
+
+| Componente | Pra que serve |
 |---|---|
-| `.layout-cover` | Capa. Sempre o slide 01. Gradiente teal/azul, headline grande, KPIs opcionais. |
-| `.layout-section-opener` | Abre uma seção. Número grande + título da seção. |
-| `.layout-executive-summary` | Resumo executivo. Headline + 3 cards + "Leitura final". |
-| `.layout-thesis-evidence` | Tese + 3 evidências com tarja colorida (vermelho/amarelo/teal). |
-| `.layout-kpi-row` | 4 números-chave lado a lado. |
-| `.layout-chart-and-cards` | Gráfico à esquerda + 3 blocos à direita. |
-| `.layout-chart-full` | Um gráfico grande ocupando o slide. |
-| `.layout-code-and-callout` | Trecho de código + interpretação. |
-| `.layout-bullets-3` | 3 colunas de bullets. |
-| `.layout-timeline` | Linha do tempo com 3–5 marcos. |
-| `.layout-architecture` | Diagrama de arquitetura (fundo escuro). Workshop. |
-| `.layout-closing` | Fechamento. Sempre o último slide. Takeaways + próximos passos. |
+| `.metric-rail` | régua de 4 números-âncora — só na capa |
+| `.two-col` / `.three-col` / `.score-grid` | grids de composição |
+| `.panel` | card branco (título + texto) |
+| `.chart-card` + `.chart` | card de gráfico (SVG data-driven) |
+| `.timeline` | linha do tempo, até 6 marcos |
+| `.callout` | destaque tipado (`Leitura final:`, `Interpretação:`) |
+| `.evidence` | cards de evidência com tarja colorida |
+| `.matrix` | tabela de dados / plano de ação |
+| `.code` | bloco de código |
+| `.diagram` | diagrama de fluxo (nós + setas) |
+| `.decision` | par de cards comparativos |
+| `.takeaways` | fechamento — lista de pontos |
 
-Cada layout tem um exemplo HTML completo e renderizável em `~/.claude/skills/decks-skill/layouts/`. Abra qualquer um no navegador pra ver.
+Combinações testadas (extraídas do deck kontik) estão em **`reference/slide-recipes.md`** — 9 receitas prontas. Catálogo completo de componentes em `reference/component-catalog.md`.
 
-> **Regra de ouro:** o slide 01 é sempre `cover`, o último é sempre `closing`. O lint reprova se não for.
+> **Regra de ouro:** o slide 01 é sempre `class="slide cover"`. Todo slide tem `.logo`, `.content` e `.kicker`. O lint reprova se faltar.
 
 ---
 
@@ -255,17 +271,17 @@ O lint é **binário**: ou passa 10/10, ou reprova. Cada regra checa uma coisa e
 | **L3** | Tema importado (`elven-deck.css` ou tokens inline) |
 | **L4** | Existe pelo menos um elemento `.slide` |
 | **L5** | Canvas declarado como 1280×720 |
-| **L6** | Todo slide tem uma classe `.layout-*` canônica |
-| **L7** | O primeiro slide é `.layout-cover` |
-| **L8** | O último slide é `.layout-closing` |
-| **L9** | Numeração de slides via CSS counter |
-| **L10** | Nenhum emoji no texto visível (use `.pill-chip` no lugar) |
+| **L6** | O primeiro slide é `class="slide cover"` |
+| **L7** | Todo slide tem uma moldura `.content` |
+| **L8** | Todo slide tem um `.kicker` |
+| **L9** | Todo slide tem o `.logo` |
+| **L10** | Nenhum emoji no texto visível (use `.tag` no lugar) |
 
 Quando reprova, a saída diz a regra e o motivo:
 
 ```
 FAIL deck.html (9/10):
-  - L7: first slide is not .layout-cover
+  - L6: first slide is not class="slide cover"
 ```
 
 Use o lint como **gate**: nada vai pro cliente sem 10/10.
@@ -280,7 +296,7 @@ Esse pacote é, antes de tudo, um *skill* de IA. Depois de `decks-skill install`
 cria um deck client-report sobre o incidente do cliente X usando o decks-skill
 ```
 
-O agente carrega o skill, identifica o tipo, monta o scaffold, escolhe os layouts certos, preenche o conteúdo, roda o lint e gera o PDF — tudo no padrão da casa. Os 8 documentos de referência (`reference/`) e os 3 checklists guiam o agente passo a passo.
+O agente carrega o skill, identifica o tipo, monta o scaffold, compõe os slides com as receitas, preenche o conteúdo, roda o lint e gera o PDF — tudo no padrão da casa. Os 8 documentos de referência (`reference/`) e os 3 checklists guiam o agente passo a passo.
 
 ---
 
@@ -289,8 +305,8 @@ O agente carrega o skill, identifica o tipo, monta o scaffold, escolhe os layout
 **O PDF saiu com fonte errada / sem o visual certo.**
 O tema usa Inter e IBM Plex Mono via fallback do sistema. Em máquina/CI sem essas fontes, o render cai numa fonte genérica. Instale as fontes localmente ou rode o render numa máquina que já as tenha. Self-host das fontes está no roadmap v0.2.
 
-**Posso criar um layout novo?**
-Não na v0.1. Os 12 layouts são o contrato. Se faltar algo de verdade, abra uma *issue* com um exemplo de deck real que precise dele — layouts entram com evidência, não por palpite.
+**Posso criar um componente novo?**
+Não na v0.1. O conjunto de componentes é o contrato. Se faltar algo de verdade, abra uma *issue* com um exemplo de deck real que precise dele — componentes entram com evidência, não por palpite.
 
 **Posso usar a cor/logo de um cliente em vez da Elven?**
 Ainda não. A v0.1 tem um tema só (Elven). Multi-tema é v0.2+, quando algum cliente realmente exigir.
@@ -338,9 +354,8 @@ Detalhes completos: `~/.claude/skills/decks-skill/reference/brand-tokens.md`.
 └── skill/                      # o que é copiado pra ~/.claude/skills/
     ├── SKILL.md                # ponto de entrada do agente IA
     ├── templates/              # os 2 scaffolds (client-report, workshop)
-    ├── layouts/                # 12 exemplos HTML, um por layout
-    ├── themes/                 # elven-deck.css (o tema travado)
-    ├── reference/              # 8 docs: brand, layouts, componentes, voz editorial, etc.
+    ├── themes/                 # elven-deck.css + elven-deck-charts.js
+    ├── reference/              # 8 docs: brand, receitas, componentes, voz editorial, etc.
     ├── checklists/             # pre-deliver, visual-qa, persona-coverage
     ├── scripts/                # lint.sh, render-deck.js, preview-deck.js
     └── assets/                 # logo Elven + gráficos de exemplo
@@ -354,7 +369,7 @@ Bem-vindo:
 
 - Fixtures de teste novas (`tests/fixtures/`).
 - Mensagens de erro do lint mais claras.
-- Layout novo — **com um deck real que precise dele** anexado à issue.
+- Componente novo — **com um deck real que precise dele** anexado à issue.
 
 Não bem-vindo (abra issue antes):
 

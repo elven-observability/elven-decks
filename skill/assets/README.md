@@ -4,10 +4,10 @@ Canonical assets shared by all decks rendered with this skill.
 
 ## `elven-logo.png`
 
-Logo Elven Works (versão usada no PDF `kontik-zupper-incident-24h.pdf`). Aparece no canto superior direito de todo slide via classe `.logo-block`.
+Logo Elven Works (versão usada no PDF `kontik-zupper-incident-24h.pdf`). Aparece no canto superior direito de todo slide via classe `.logo`.
 
 - Fonte: extraído de `kontik-zupper-incident-2026-05-08/assets/elven-logo.png`.
-- Tamanho recomendado em CSS: `width: 92px`.
+- Tamanho recomendado em CSS: `width: 104px`.
 - Quando exportar versão maior/menor: refaça do brand kit oficial.
 
 > **Roadmap v0.2+**: substituir por SVG self-contained pra ficar crisp em zoom de PDF.

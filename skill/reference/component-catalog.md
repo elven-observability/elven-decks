@@ -1,203 +1,240 @@
-# Component catalog — atomic components
+# Component catalog
 
-Os componentes atômicos vivem em `themes/elven-deck.css` e podem ser usados em qualquer layout. Cada um tem markup curto + props/modifiers + exemplo + anti-pattern.
+Todos os componentes do tema `elven-deck.css`. São combináveis livremente dentro de `.content`. Para combinações testadas, ver `slide-recipes.md`.
+
+> Regra: não invente classe nova. Falta algo? Abra issue.
 
 ---
 
-## `.eyebrow`
+## Moldura (obrigatória em todo slide)
 
-**O que é**: small caps + traço esquerdo teal. Identifica seção/categoria do slide.
+### `.slide` + variante
 
 ```html
-<span class="eyebrow">Resumo executivo</span>
+<section class="slide">          <!-- light, padrão -->
+<section class="slide dark">     <!-- fundo escuro -->
+<section class="slide cover">    <!-- gradiente, só slide 01 -->
+<section class="slide split-dark"><!-- metade dark / metade light -->
 ```
 
-- **Tamanho**: 12-30 chars. Acima disso, vira título — vai pra `.headline`.
-- **Cor**: teal automática em light; branco em `.slide.dark` / `.slide.cover` (override automático).
+Canvas fixo 1280×720. Numeração de página automática (canto inferior direito).
 
-**Anti-pattern**: eyebrow com 50+ chars; eyebrow sem traço (não esquecer a classe).
-
----
-
-## `.headline`
-
-**O que é**: Inter bold 44px, line-height 1.12. A tese principal do slide.
+### `.logo`
 
 ```html
-<h1 class="headline">Tese principal em 2-3 linhas.</h1>
+<img class="logo" src="assets/elven-logo.png" alt="Elven" />
+<img class="logo on-dark" src="assets/elven-logo.png" alt="Elven" />
 ```
 
-**Modifiers**:
+Canto superior direito. Em `slide dark`/`cover` o tema já branqueia o logo automaticamente; `on-dark` é declaração explícita (recomendada) e escape hatch manual. `on-light` força colorido.
 
-- `.headline.is-large` — 56px (covers e closing)
-- `.headline.is-small` — 36px (raro)
+### `.content`
 
-**Anti-pattern**: headline >3 linhas (= ideia confusa); headline acabando em "que…", "para…" (continuação suspensa, fica fraco); duas headlines no mesmo slide.
+A moldura editorial. `position: absolute; inset: 52px 72px 54px 72px`. **Tudo do slide mora aqui**, exceto `.logo`, `.metric-rail` e `.source`.
 
----
-
-## `.subhead`
-
-**O que é**: parágrafo descritivo 18px, line-height 1.5, cor muted-strong.
+### `.source`
 
 ```html
-<p class="subhead">Janela temporal, fonte, ou framing do headline.</p>
+<div class="source">Fonte: query, datasource, metodologia.</div>
 ```
 
-**Quando usar**: só em cover e em layouts onde o headline precisa de contexto técnico curto.
+Rodapé esquerdo, texto pequeno. Para citar origem dos dados.
 
 ---
 
-## `.callout-banner`
+## Tipografia
 
-**O que é**: blockquote com left bar teal grossa. Tipado por label bold.
+| Classe / tag | Uso |
+|---|---|
+| `.kicker` | etiqueta small caps no topo do `.content` (obrigatória). Traço esquerdo automático. |
+| `h1` | headline da capa (68px) |
+| `h2` | headline dos demais slides (42px) |
+| `h3` | título de card (20px) |
+| `.sub` | subtítulo da capa (22px, claro) |
+| `.light-sub` | subtítulo em slide light (18px, cinza) |
+| `.mono` | trecho inline em fonte monoespaçada — variáveis, nomes técnicos |
+
+---
+
+## Capa
+
+### `.metric-rail` › `.metric`
 
 ```html
-<div class="callout-banner">
-  <span class="label">Leitura final:</span>
-  <p>Conteúdo do callout em 1-3 linhas.</p>
+<div class="metric-rail">
+  <div class="metric">
+    <div class="value">13:47</div>
+    <div class="label">descrição curta do número-âncora</div>
+  </div>
+  <!-- 4 metrics -->
 </div>
 ```
 
-**Labels canônicos** (sempre com `:` no final, sempre teal por padrão):
-
-- `Leitura final:` — fechamento de tese (executive-summary)
-- `Interpretação:` — análise técnica (code-and-callout)
-- `Atenção:` — ponto de cuidado operacional
-- `Importante:` — destaque que muda decisão
-- `Próximo:` — usado no `.layout-closing > .next`
-
-**Anti-pattern**: callout sem label; callout no meio do parágrafo (deve viver standalone após cards).
+Régua de 4 números-âncora no rodapé da capa. Fica FORA do `.content` (irmão dele).
 
 ---
 
-## `.code-panel`
+## Grids de composição
 
-**O que é**: bloco preto-azulado (`#0b1220`) com fonte mono, 13px, line-height 1.55, white-space preservado.
+| Classe | Colunas |
+|---|---|
+| `.two-col` | 1fr 1fr |
+| `.three-col` | 3 × 1fr |
+| `.score-grid` | 1.2fr 0.8fr (gráfico + lateral) |
 
-```html
-<pre class="code-panel">shouldAllowAnotherRequeue(orderId)
-  se deadline ausente -&gt; cria janela
-  retorno: true</pre>
-```
-
-**Inline code**: use `<code>` (background sutil automático). Variáveis, nomes de arquivo, IDs.
-
-**Anti-pattern**: code-panel com 20+ linhas (corta narrativa); code-panel sem `<pre>` (perde whitespace).
+Todos com `margin-top` e `gap` embutidos.
 
 ---
 
-## `.pill-chip`
+## Cards
 
-**O que é**: chip teal-12% pill. Pra label categórico curto.
-
-```html
-<span class="pill-chip">OK</span>
-<span class="pill-chip is-amber">Atenção</span>
-<span class="pill-chip is-red">Crítico</span>
-<span class="pill-chip is-light">Neutro</span>
-```
-
-**Quando**: badges em cards, status, severidade. Substitui emoji (`✅` → `<span class="pill-chip">OK</span>`).
-
----
-
-## `.card-fact`
-
-**O que é**: card branco com number/string grande + label + desc.
+### `.panel`
 
 ```html
-<div class="card-fact">
-  <div class="value">13:47</div>
-  <div class="label">Último erro fatal</div>
-  <div class="desc">Contexto em 1-2 linhas.</div>
-</div>
-```
-
----
-
-## `.card-info`
-
-**O que é**: card branco com título bold + parágrafo. Layout flexível.
-
-```html
-<div class="card-info">
+<div class="panel">
   <h3>Título do card</h3>
-  <p>Conteúdo em 2-4 linhas.</p>
+  <p>Texto. Aceita também &lt;ul&gt;&lt;li&gt;.</p>
 </div>
 ```
 
-**Quando**: cards do `layout-executive-summary`, blocos secundários.
+Card branco genérico. `.panel.dark-panel` = variante de fundo escuro (para usar em slide light). Card branco mantém texto escuro mesmo em `slide dark` — automático.
 
----
-
-## `.card-compare`
-
-**O que é**: card com **top-accent bar colorida** indicando semântica.
+### `.evidence-row` › `.evidence`
 
 ```html
-<div class="card-compare is-good"><h3>+31%</h3><p>…</p></div>
-<div class="card-compare is-warn"><h3>13:50</h3><p>…</p></div>
-<div class="card-compare is-bad"><h3>payment_form_id</h3><p>…</p></div>
-<div class="card-compare is-info"><h3>Contexto</h3><p>…</p></div>
-```
-
-**Variantes**:
-
-- `is-good` — teal
-- `is-warn` — amber
-- `is-bad` — red
-- `is-info` — blue
-
-**Quando**: `layout-thesis-evidence`, `layout-chart-and-cards` right column.
-
----
-
-## `.card-step`
-
-**O que é**: card numerado com `data-step` attribute. Renderiza número pequeno teal mono no topo.
-
-```html
-<div class="card-step" data-step="01.">
-  <h3>Identificar tipo</h3>
-  <p>Descrição do passo.</p>
+<div class="evidence-row">
+  <div class="evidence hot"><div class="big">dado</div><div class="small">contexto</div></div>
+  <div class="evidence warn">…</div>
+  <div class="evidence">…</div>
 </div>
 ```
 
-**Quando**: roteiros passo-a-passo (raro em deck, mais comum em printable).
+Cards com tarja superior grossa. `.hot` (vermelho), `.warn` (âmbar), padrão (teal). `.big` = número grande, `.small` = legenda.
 
----
-
-## `.card-kpi`
-
-**O que é**: card com número grande (36px) + label small caps + desc.
+### `.chart-card` › `.chart` + `.note`
 
 ```html
-<div class="card-kpi">
-  <div class="value">+92%</div>
-  <div class="label">Throughput pós-14h</div>
-  <div class="desc">Reservas voltam ao nível pré-incidente.</div>
+<div class="chart-card">
+  <div class="chart-title"><strong>Título</strong><span>séries</span></div>
+  <div class="chart" id="grafico-x"></div>
+  <div class="note">O que observar no gráfico.</div>
 </div>
 ```
 
-**Quando**: `layout-kpi-row` (4 cards lado a lado).
+`.chart-card.compact` = altura menor. O `.chart` é preenchido pelo motor de gráficos (ver `elven-deck-charts.js`).
 
 ---
 
-## `.logo-block`
+## Callout
 
 ```html
-<img class="logo-block" src="../assets/elven-logo.png" alt="Elven" />
+<div class="callout"><strong>Rótulo:</strong> destaque escuro.</div>
+<div class="callout light"><strong>Leitura final:</strong> destaque claro.</div>
 ```
 
-Posiciona automaticamente no canto superior direito. Largura 92px. **Sempre presente** em todo slide.
+Barra lateral teal. `<strong>` é o rótulo tipado (`Leitura final:`, `Interpretação:`, `Ação recomendada:`). `.light` = card branco (mais comum em slide light).
 
 ---
 
-## `.footer-meta`
+## Timeline
 
 ```html
-<span class="footer-meta">Período analisado: 07/05 20:00 a 08/05 20:00 BRT.</span>
+<div class="timeline">
+  <div class="tl-item hot">
+    <div class="tl-time">10h</div>
+    <div class="tl-title">Título do marco</div>
+    <div class="tl-copy">O que aconteceu.</div>
+  </div>
+  <!-- até 6 itens -->
+</div>
 ```
 
-Texto muted no canto inferior esquerdo. Usado pra fontes, janela temporal, autor. Não compete com numeração de página (canto inferior direito).
+Régua horizontal. Marcador: padrão (teal), `.hot` (vermelho), `.warn` (âmbar).
+
+---
+
+## Matrix (tabela)
+
+```html
+<div class="matrix">
+  <div class="matrix-row matrix-head"><div>Col A</div><div>Col B</div>…</div>
+  <div class="matrix-row">
+    <div>célula</div>
+    <div class="risk high">texto de risco</div>
+  </div>
+</div>
+```
+
+Tabela de dados / plano de ação. `.matrix-head` = cabeçalho. `.risk` colore: `.high` (vermelho), `.med` (âmbar escuro), `.low` (teal).
+
+---
+
+## Code
+
+```html
+<div class="code">funcao(args)
+  passo 1
+  retorno: x</div>
+```
+
+Bloco de código, fundo escuro, fonte monoespaçada. Preserva quebras de linha.
+
+---
+
+## Diagram
+
+```html
+<div class="diagram">
+  <div class="node"><h3>Nó A</h3><p>Descrição.</p></div>
+  <div class="arrow">+</div>
+  <div class="node"><h3>Nó B</h3><p>Descrição.</p></div>
+  <div class="arrow">&rarr;</div>
+  <div class="node"><h3>Nó C</h3><p>Descrição.</p></div>
+</div>
+```
+
+5 colunas: nó / seta / nó / seta / nó. `.arrow` aceita `+`, `&rarr;`, etc.
+
+---
+
+## Decision
+
+```html
+<div class="decision">
+  <div class="yes"><h3>O que sim</h3><p class="light-sub">…</p></div>
+  <div class="no"><h3>O que não</h3><p class="light-sub">…</p></div>
+</div>
+```
+
+Par de cards comparativos. `.yes` tarja teal, `.no` tarja vermelha. Cards brancos com texto escuro (automático em qualquer variante de slide).
+
+---
+
+## Takeaways
+
+```html
+<div class="takeaways">
+  <div class="takeaway">Ponto de fechamento.</div>
+  <!-- 4-6 itens, grade 2 colunas -->
+</div>
+```
+
+Lista de fechamento. Marcador quadrado teal (lima em slide dark).
+
+---
+
+## Tags
+
+```html
+<div class="tag-row">
+  <span class="tag">Etiqueta</span>
+</div>
+```
+
+Etiquetas categóricas. **Substituem emoji** — nunca use emoji no corpo do deck (lint L10).
+
+---
+
+## Texto em cards brancos sobre slide dark
+
+`.panel`, `.evidence`, `.node`, `.decision .yes/.no` são sempre brancos e **forçam texto escuro** mesmo dentro de `slide dark`. Você não precisa (e não deve) sobrescrever a cor — senão o título some. Se precisa de um card escuro num slide light, use `.panel.dark-panel`.

@@ -7,7 +7,7 @@ Fechar o Dia 1 com `<mensagem principal>` e ligar pro Dia 2.
 ## Fala pronta
 
 `<Parágrafos de fechamento. Tom de "fechamos o ciclo de hoje". Pode reusar
-os takeaways do `.layout-closing`. Sempre terminar com transição pro próximo dia.>`
+os takeaways do slide de fechamento. Sempre terminar com transição pro próximo dia.>`
 
 ## Interação opcional
 

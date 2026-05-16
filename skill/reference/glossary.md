@@ -6,108 +6,110 @@ Termos usados pelo skill, na voz da casa.
 
 **Agenda** — Plano de tempo do dia/sessão. Em workshop, vive em `agenda/day-X.md`.
 
-**Brand tokens** — Variáveis CSS imutáveis (`--teal`, `--paper`, etc) que definem a identidade Elven. Locked em v0.1.0.
+**Brand tokens** — Variáveis CSS imutáveis (`--teal`, `--paper`, etc) que definem a identidade Elven. Ver `brand-tokens.md`.
 
-**Callout banner** — Bloco com left bar teal grossa, label bold tipado ("Leitura final:", "Interpretação:"). Componente `.callout-banner`.
+**Callout** — Bloco de destaque com barra lateral teal e rótulo tipado em `<strong>` ("Leitura final:", "Interpretação:"). Componente `.callout` / `.callout.light`.
 
-**Card** — Container de informação reutilizável. Família: `.card-fact`, `.card-info`, `.card-compare`, `.card-step`, `.card-kpi`.
+**Card** — Container de informação. No tema: `.panel` (genérico), `.evidence` (com tarja), `.node` (diagrama), `.chart-card` (gráfico).
 
-**Client-report-deck** — Tipo canônico. Deck consumido em PDF pelo cliente, sem presenter. Exemplo: kontik incident report.
+**Charts (motor de gráficos)** — `elven-deck-charts.js`. Expõe `ElvenDeck.lineChart` e `ElvenDeck.barChart` — gráficos SVG data-driven.
 
-**Closing** — Último slide do deck. Layout `.layout-closing`. Takeaways + bloco "Próximo".
+**Client-report-deck** — Tipo canônico. Deck consumido em PDF pelo cliente, sem presenter.
 
-**Code panel** — Bloco de código com fundo escuro e fonte IBM Plex Mono. Componente `.code-panel`.
+**Code** — Bloco de código, fundo escuro, fonte monoespaçada. Componente `.code`.
 
-**Contact-sheet** — Grid 4-col com todos os slides em miniatura. Gerado por `decks-skill preview`. Usado para QA visual rápido.
+**Compose-model** — O modelo do skill: não há layout fixo por slide; cada slide é uma variante + `.content` + composição de componentes.
 
-**Cover** — Primeiro slide. Sempre `.layout-cover` com gradient teal/blue.
+**Contact-sheet** — Grid 4-col com todos os slides em miniatura. Gerado por `decks-skill preview`. Para QA visual rápido.
 
-**CSS counter** — Mecanismo que numera slides automaticamente (`01, 02, …`). Locked em `themes/elven-deck.css`.
+**Content** — A moldura editorial do slide (`.content`). Todo conteúdo mora dentro dela. Obrigatória (lint L7).
 
-**Day script (teleprompter)** — Script contínuo do dia, em `materials/speaker-notes/day-X-script.md`. Reúne todas as speaker notes.
+**Cover** — Primeiro slide. Sempre `class="slide cover"` (gradiente). Lint L6.
 
-**Deck** — Apresentação de slides. Em arquivo: um HTML com vários `<section class="slide">`.
+**CSS counter** — Mecanismo que numera slides automaticamente (`01, 02, …`).
 
-**Eyebrow** — Etiqueta small caps no topo do slide, traço esquerdo teal. Identifica a seção. Componente `.eyebrow`.
+**Day script (teleprompter)** — Script contínuo do dia, em `materials/speaker-notes/day-X-script.md`.
 
-**Fala pronta** — Seção da speaker note com o texto real a ser dito em voz alta. Não é meta-comentário.
+**Deck** — Apresentação de slides. Em arquivo: `<main class="deck">` com vários `<section class="slide">`.
 
-**Fixture** — Arquivo HTML de teste (`tests/fixtures/`). Existe pra lint e render: `pass-*.html` (deve passar) e `fail-*.html` (deve falhar regra específica).
+**Decision** — Par de cards comparativos (`.decision` › `.yes` / `.no`).
 
-**Footer-meta** — Texto muted no canto inferior esquerdo do slide. Usado pra fonte de dados, autor, janela. Componente `.footer-meta`.
+**Diagram** — Diagrama de fluxo: nós + setas (`.diagram` › `.node` / `.arrow`).
+
+**Evidence** — Card de evidência com tarja superior colorida (`.evidence`, variantes `.hot`/`.warn`).
+
+**Fala pronta** — Seção da speaker note com o texto real a ser dito em voz alta.
+
+**Fixture** — Arquivo HTML de teste (`tests/fixtures/`): `pass-*.html` (deve passar) e `fail-*.html` (deve falhar uma regra).
 
 **Frame** — O canvas do slide. Sempre 1280×720 px (16:9).
 
-**Hands-on** — Bloco prático do workshop com execução pelos alunos. Diferente de demo (instrutor faz, plateia olha).
+**Hands-on** — Bloco prático do workshop com execução pelos alunos.
 
-**Headline** — Tese principal do slide. Inter bold 44-56px. Componente `.headline`.
+**Headline** — Tese principal do slide. `h1` na capa (68px), `h2` nos demais (42px), peso 900.
 
-**IBM Plex Mono** — Fonte monoespaçada canônica pra código.
-
-**Inter** — Fonte sans canônica pra todo texto não-código.
-
-**Interação opcional** — Seção da speaker note declarando a pausa/pergunta proposta pra plateia.
-
-**KPI band** — Faixa de 4 KPIs no cover (`.kpi-band`).
+**Kicker** — Etiqueta small caps no topo do `.content`, traço esquerdo automático. Obrigatória (lint L8). Componente `.kicker`.
 
 **Lab** — Roteiro hands-on do workshop, em `labs/day-X/lab.md`.
 
-**Layout** — Composição de slide, definida por classe CSS `.layout-*`. v0.1.0 tem 12 layouts canônicos.
-
 **Lint binário** — Verificação 10/10 de regras estruturais sobre o HTML do deck. `decks-skill lint`.
 
-**Logo block** — Logo Elven no canto superior direito. Componente `.logo-block`.
+**Logo** — Logo Elven no canto superior direito. Componente `.logo`. Branco automático em slide dark/cover. Obrigatório (lint L9).
+
+**Matrix** — Tabela de dados / plano de ação (`.matrix` › `.matrix-row`, `.risk`).
+
+**Metric-rail** — Régua de 4 números-âncora no rodapé da capa (`.metric-rail` › `.metric`).
 
 **MTTD / MTTR** — Mean time to detect / to recover. Métricas comuns em incident reports.
 
-**Numeração** — Page number no canto inferior direito, format `01, 02, …` via CSS counter `decimal-leading-zero`.
+**Numeração** — Page number no canto inferior direito, format `01, 02, …`.
 
-**Objetivo do slide** — Seção da speaker note declarando o que o slide precisa instalar na plateia.
+**Objetivo do slide** — Seção da speaker note declarando o que o slide instala na plateia.
+
+**Panel** — Card branco genérico (título + texto). Componente `.panel`.
 
 **Paper** — Cor de fundo do slide light (`#f4f7f8`). Token `--paper`.
 
 **Persona** — Audiência alvo (cliente-stakeholder, turma-mentoria, instrutor-elven, etc).
 
-**Pill chip** — Badge pill teal. Substitui emoji como indicador de status. Componente `.pill-chip`.
+**Preview** — Conjunto de PNGs por slide gerado por `decks-skill preview` (1.5×). Inclui `contact-sheet.png`.
 
-**Preview** — Conjunto de PNGs por slide gerado por `decks-skill preview`. Inclui `contact-sheet.png`.
+**Read-only inspection** — Inspeção de código sem editar. Padrão em PS report.
 
-**Print CSS** — `themes/elven-deck.print.css`. Ajustes pra Puppeteer headless Chromium gerar PDF clean.
-
-**Read-only inspection** — Inspeção de código sem editar. Padrão em PS report quando o engenheiro Elven analisa repo do cliente.
+**Receita (slide recipe)** — Combinação testada de componentes para um tipo de slide. Ver `slide-recipes.md`.
 
 **Render** — Conversão HTML → PDF via Puppeteer. `decks-skill render`.
 
-**Scaffold** — Pasta inicial criada por `decks-skill new`. Tem placeholders preenchidos.
+**Scaffold** — Pasta inicial criada por `decks-skill new`, com placeholders.
 
-**Section opener** — Slide que abre um bloco/seção. Layout `.layout-section-opener`. Big number + section title.
+**Slide** — Unidade do deck. `<section class="slide">`, variantes `dark`/`cover`/`split-dark`. Sempre 1280×720.
 
-**Slide** — Unidade do deck. Em HTML: `<section class="slide …">`. Sempre 1280×720.
+**Source** — Linha de fonte/metodologia no rodapé esquerdo do slide. Componente `.source`.
 
 **Source-notes.md** — Anotações de origem dos dados em client-report-deck. Garante rastreabilidade.
 
 **Speaker note** — Markdown com 4 seções (Objetivo / Fala pronta / Interação / Versão curta) acompanhando um slide em workshop.
 
-**Subhead** — Subtítulo do slide. Componente `.subhead`. 18px, muted-strong.
+**Sub / light-sub** — Subtítulo do slide. `.sub` (capa, 22px claro), `.light-sub` (slide light, 18px cinza).
 
-**Takeaway** — Item de fechamento. Aparece no `.layout-closing` com bullet teal.
+**Tag** — Etiqueta categórica pill (`.tag`). Substitui emoji — emoji é banido (lint L10).
+
+**Takeaway** — Item de fechamento (`.takeaways` › `.takeaway`).
 
 **Teal** — Cor accent primária (`#00bfa5`). Token `--teal`.
 
 **Template** — Pasta inicial em `skill/templates/<tipo>/` que `decks-skill new` copia.
 
-**Theme** — `themes/elven-deck.css`. Define tokens, frame, layouts, componentes.
+**Theme** — `themes/elven-deck.css`. Define tokens, frame e componentes.
 
-**Thesis-evidence** — Layout com tese + 3 cards de evidência colorida. `.layout-thesis-evidence`.
-
-**Timeline** — Layout com 3-5 marcos cronológicos. `.layout-timeline`.
+**Timeline** — Linha do tempo com até 6 marcos (`.timeline` › `.tl-item`).
 
 **Token** — Variável CSS canônica em `:root`. Mudar quebra o brand.
 
-**Tone** — Editorial voice. Definido em `editorial-voice.md`.
+**Variante de slide** — `slide` (light), `slide dark`, `slide cover`, `slide split-dark`.
 
-**Versão curta** — Seção da speaker note com 1 frase resumindo o slide pra quando o tempo aperta.
+**Versão curta** — Seção da speaker note com 1 frase resumindo o slide.
 
-**Visual QA** — Inspeção do contact-sheet pra problemas que lint não pega.
+**Visual QA** — Inspeção do contact-sheet pra problemas que o lint não pega.
 
 **Workshop-mentorship-deck** — Tipo canônico. Pacote multi-dia com agenda + slides + labs + speaker notes + script.

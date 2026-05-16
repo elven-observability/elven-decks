@@ -17,8 +17,8 @@ Bata item a item antes de mandar o deck ao cliente.
 - [ ] `contact-sheet.png` revisado, sem overflow
 - [ ] Numeração de página `01, 02, …` presente em todos os slides
 - [ ] Logo Elven canto superior direito em todos
-- [ ] Slide 01 é `.layout-cover` (gradient teal/blue)
-- [ ] Slide final é `.layout-closing` (takeaways + próximo)
+- [ ] Slide 01 é `class="slide cover"` (gradiente teal/blue)
+- [ ] Slide final é o fechamento (`.takeaways` + callout)
 
 ## Lint / Render
 

@@ -102,9 +102,9 @@ Em PR / review, esse é o gate G6 do `quality-gate.md`.
 ## Sobre código no deck
 
 - Inline: `<code>` (variáveis, paths, comandos curtos).
-- Bloco: `.code-panel` em `<pre>`. Máximo ~12 linhas. Se for mais, está sobrando.
+- Bloco: `.code` em `<pre>`. Máximo ~12 linhas. Se for mais, está sobrando.
 - Sintaxe highlight: **não há** em v0.1. O texto fica branco-azulado sobre `#0b1220`. Comentários inline use `# …` ou `// …` literal — não precisa estilizar.
-- Sem `:` no fim de label de variável dentro do code-panel; siga a sintaxe da linguagem real.
+- Sem `:` no fim de label de variável dentro do `.code`; siga a sintaxe da linguagem real.
 
 ---
 
