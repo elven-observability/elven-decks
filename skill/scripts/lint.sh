@@ -4,9 +4,11 @@
 # Binary 10/10 check for Elven deck HTML files. Exit 0 only when every file
 # passes every rule. Each failure prints the rule ID + reason.
 #
+# Modelo kontik: o lint valida a MOLDURA (slide variant, .content, .kicker,
+# .logo, canvas, tema, cover-first, sem emoji). A composição interna é livre.
+#
 # Usage:
 #   decks-skill lint <file.html> [<file.html>...]
-#   ./skill/scripts/lint.sh <file.html> [<file.html>...]
 
 set -u
 
@@ -21,7 +23,7 @@ if [ $# -eq 0 ]; then
   cat >&2 <<'USAGE'
 Usage: decks-skill lint <file.html> [<file.html>...]
 
-Lints Elven deck HTML files against 10 binary rules.
+Lints Elven deck HTML files against 10 binary frame rules.
 Exit 0: all files pass 10/10. Exit 1: at least one failure.
 USAGE
   exit 2
@@ -36,6 +38,11 @@ lint_one() {
     echo "$(red "FAIL") $file: file not found"
     return 1
   fi
+
+  # Stripped view: HTML comments, <style> and <script> removed, so structural
+  # counts (L4-L9) never get fooled by class names mentioned in comments or JS.
+  local stripped
+  stripped=$(perl -0777 -pe 's/<!--.*?-->//gs; s/<style\b.*?<\/style>//gsi; s/<script\b.*?<\/script>//gsi;' "$file" 2>/dev/null || cat "$file")
 
   # L1: DOCTYPE + lang="pt-BR"
   if ! grep -qiE '<!DOCTYPE html>' "$file"; then
@@ -52,87 +59,86 @@ lint_one() {
     ((failures++)) || true
   fi
 
-  # L3: theme imported (link href elven-deck.css OR :root with --teal:#00bfa5)
+  # L3: theme present (elven-deck.css link OR :root with --teal:#00bfa5)
   if ! grep -qE 'elven-deck\.css' "$file" \
      && ! grep -qE -- '--teal:[[:space:]]*#00bfa5' "$file"; then
     errors+=("L3: missing elven-deck.css link or inline brand tokens (--teal:#00bfa5)")
     ((failures++)) || true
   fi
 
-  # L4: at least one .slide element present
-  if ! grep -qE 'class="slide([ "]|[[:space:]]+[a-z\-]+)' "$file"; then
+  # Count slides (slide, slide cover, slide dark, slide split-dark)
+  local slide_count
+  slide_count=$(printf '%s' "$stripped" | grep -coE 'class="slide([ "])' || true)
+
+  # L4: at least one .slide
+  if [ "$slide_count" -eq 0 ]; then
     errors+=("L4: no .slide elements found")
     ((failures++)) || true
   fi
 
-  # L5: canvas size declared (--w: 1280px AND --h: 720px in CSS OR width:1280px height:720px)
-  local has_w has_h
-  has_w=$(grep -cE -- '--w:[[:space:]]*1280px|width:[[:space:]]*1280px' "$file" || true)
-  has_h=$(grep -cE -- '--h:[[:space:]]*720px|height:[[:space:]]*720px' "$file" || true)
-  # If the file links the theme css, those declarations live there; accept the link as proof.
-  if [ "$has_w" -eq 0 ] || [ "$has_h" -eq 0 ]; then
-    if ! grep -qE 'elven-deck\.css' "$file"; then
-      errors+=("L5: canvas 1280×720 not declared (need --w/--h or width/height, or elven-deck.css link)")
-      ((failures++)) || true
-    fi
-  fi
-
-  # L6: every .slide has a canonical .layout-* class
-  local layouts="cover|section-opener|executive-summary|thesis-evidence|kpi-row|chart-and-cards|chart-full|code-and-callout|bullets-3|timeline|architecture|closing"
-  local slide_count layout_count
-  slide_count=$(grep -cE 'class="slide([ "]|[[:space:]]+[a-z\-]+)' "$file" || true)
-  layout_count=$(grep -cE "class=\"slide[^\"]*layout-($layouts)" "$file" || true)
-  if [ "$slide_count" -gt 0 ] && [ "$layout_count" -lt "$slide_count" ]; then
-    errors+=("L6: $((slide_count - layout_count)) of $slide_count slide(s) missing a canonical .layout-* class")
-    ((failures++)) || true
-  fi
-
-  # L7: first slide is .layout-cover
-  local first_slide
-  first_slide=$(grep -nE 'class="slide([ "]|[[:space:]]+[a-z\-]+)' "$file" | head -n 1)
-  if [ -n "$first_slide" ] && ! echo "$first_slide" | grep -qE 'layout-cover'; then
-    errors+=("L7: first slide is not .layout-cover")
-    ((failures++)) || true
-  fi
-
-  # L8: last slide is .layout-closing
-  local last_slide
-  last_slide=$(grep -nE 'class="slide([ "]|[[:space:]]+[a-z\-]+)' "$file" | tail -n 1)
-  if [ -n "$last_slide" ] && ! echo "$last_slide" | grep -qE 'layout-closing'; then
-    errors+=("L8: last slide is not .layout-closing")
-    ((failures++)) || true
-  fi
-
-  # L9: CSS counter-increment for slide (in file OR via elven-deck.css link)
-  if ! grep -qE 'counter-increment:[[:space:]]*slide' "$file" \
+  # L5: canvas 1280x720 declared (--w/--h, or width/height, or theme link)
+  if ! grep -qE -- '--w:[[:space:]]*1280px' "$file" \
+     && ! grep -qE -- 'width:[[:space:]]*1280px' "$file" \
      && ! grep -qE 'elven-deck\.css' "$file"; then
-    errors+=("L9: CSS counter-increment for slide numbering not present")
+    errors+=("L5: canvas 1280x720 not declared (need --w/--h, width/height, or elven-deck.css link)")
     ((failures++)) || true
   fi
 
-  # L10: no emoji in visible body text (skip <pre>/<code> blocks)
+  # L6: first slide carries the cover variant
+  local first_slide
+  first_slide=$(printf '%s' "$stripped" | grep -nE 'class="slide([ "])' | head -n 1)
+  if [ -n "$first_slide" ] && ! echo "$first_slide" | grep -qE 'class="slide cover'; then
+    errors+=("L6: first slide is not class=\"slide cover\"")
+    ((failures++)) || true
+  fi
+
+  # L7: every slide has a .content box
+  local content_count
+  content_count=$(printf '%s' "$stripped" | grep -coE 'class="content([ "])' || true)
+  if [ "$slide_count" -gt 0 ] && [ "$content_count" -lt "$slide_count" ]; then
+    errors+=("L7: $((slide_count - content_count)) of $slide_count slide(s) missing a .content box")
+    ((failures++)) || true
+  fi
+
+  # L8: every slide has a .kicker
+  local kicker_count
+  kicker_count=$(printf '%s' "$stripped" | grep -coE 'class="kicker([ "])' || true)
+  if [ "$slide_count" -gt 0 ] && [ "$kicker_count" -lt "$slide_count" ]; then
+    errors+=("L8: $((slide_count - kicker_count)) of $slide_count slide(s) missing a .kicker")
+    ((failures++)) || true
+  fi
+
+  # L9: every slide has a .logo
+  local logo_count
+  logo_count=$(printf '%s' "$stripped" | grep -coE 'class="logo([ "])' || true)
+  if [ "$slide_count" -gt 0 ] && [ "$logo_count" -lt "$slide_count" ]; then
+    errors+=("L9: $((slide_count - logo_count)) of $slide_count slide(s) missing a .logo")
+    ((failures++)) || true
+  fi
+
+  # L10: no emoji in visible body text (skip <style>/<script>/<pre>/<code>/comments)
   if command -v python3 >/dev/null 2>&1; then
     if ! python3 - "$file" <<'PYEOF'
 import re, sys
 content = open(sys.argv[1], encoding='utf-8').read()
-# strip <style>, <pre>, <code>, <!-- comments -->
 content = re.sub(r'<style[\s\S]*?</style>', '', content)
+content = re.sub(r'<script[\s\S]*?</script>', '', content)
 content = re.sub(r'<pre[\s\S]*?</pre>', '', content)
 content = re.sub(r'<code[\s\S]*?</code>', '', content)
 content = re.sub(r'<!--[\s\S]*?-->', '', content)
 emoji = re.compile(
-    r'[\U0001F300-\U0001FAFF'      # Symbols & Pictographs
-    r'\U0001F600-\U0001F64F'       # Emoticons
-    r'\U0001F680-\U0001F6FF'       # Transport & Map
-    r'\U00002600-\U000026FF'       # Misc symbols
-    r'\U00002700-\U000027BF'       # Dingbats
-    r'\U0001F900-\U0001F9FF'       # Supplemental
+    r'[\U0001F300-\U0001FAFF'
+    r'\U0001F600-\U0001F64F'
+    r'\U0001F680-\U0001F6FF'
+    r'\U00002600-\U000026FF'
+    r'\U00002700-\U000027BF'
+    r'\U0001F900-\U0001F9FF'
     r']'
 )
 sys.exit(1 if emoji.search(content) else 0)
 PYEOF
     then
-      errors+=("L10: emoji detected in visible body text (use .pill-chip instead)")
+      errors+=("L10: emoji detected in visible body text (use .tag instead)")
       ((failures++)) || true
     fi
   fi

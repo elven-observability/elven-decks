@@ -61,11 +61,19 @@ async function main() {
 
   try {
     const page = await browser.newPage();
-    await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 2 });
+    // 1.5x: nítido para QA, e mantém o PNG abaixo de 2000px por lado
+    // (1920x1080) — seguro para abrir em qualquer visualizador/ferramenta.
+    await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 1.5 });
     await page.goto(`file://${input}`, {
       waitUntil: "networkidle0",
       timeout: 30000,
     });
+
+    // Charts are data-driven (elven-deck-charts.js). Force a re-render.
+    await page.evaluate(() => {
+      if (typeof window.renderCharts === "function") window.renderCharts();
+    });
+    await new Promise((r) => setTimeout(r, 350));
 
     const slideCount = await page.evaluate(
       () => document.querySelectorAll(".slide").length

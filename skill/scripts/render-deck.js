@@ -61,6 +61,14 @@ async function main() {
       waitUntil: "networkidle0",
       timeout: 30000,
     });
+
+    // Charts are data-driven (elven-deck-charts.js). Force a re-render once
+    // layout is settled, then give the SVG a beat to paint.
+    await page.evaluate(() => {
+      if (typeof window.renderCharts === "function") window.renderCharts();
+    });
+    await new Promise((r) => setTimeout(r, 350));
+
     await page.emulateMediaType("print");
 
     await page.pdf({
