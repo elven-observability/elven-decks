@@ -1,26 +1,38 @@
 /* @elven-observability/decks-skill — elven-deck-charts.js
  *
- * Motor de gráficos SVG data-driven dos decks Elven. Linha e barra.
- * Mesma engine do deck canônico kontik, generalizada para qualquer dado.
+ * Motor de gráficos SVG dos decks Elven. Mesma engine do deck canônico
+ * kontik-zupper-incident-2026-05-17, generalizada para qualquer dado.
+ *
+ * Três tipos:
+ *   ElvenDeck.lineChart(el, series, opts)     linhas (séries temporais)
+ *   ElvenDeck.groupedBars(el, labels, series) barras agrupadas (hoje vs ontem)
+ *   ElvenDeck.barChart(el, series, opts)      barras de série única
  *
  * Uso no deck:
  *
- *   <div class="chart" id="meu-grafico"></div>
+ *   <div class="chart" id="g-orders"></div>
  *   ...
  *   <script src="elven-deck-charts.js"></script>
  *   <script>
  *     function renderCharts() {
- *       ElvenDeck.lineChart(document.getElementById("meu-grafico"), [
- *         { name: "RPS", data: [1,2,3,...], color: ElvenDeck.colors.teal },
- *         { name: "P95", data: [4,5,6,...], color: ElvenDeck.colors.red }
- *       ], { labels: ["20h","21h",...], xticks: [0,6,12,18,24], max: 10 });
+ *       ElvenDeck.groupedBars(
+ *         document.getElementById("g-orders"),
+ *         ["00","01","02", ...],
+ *         [
+ *           { name: "hoje",  data: [93,50,30, ...], color: ElvenDeck.colors.red },
+ *           { name: "ontem", data: [143,63,41, ...], color: ElvenDeck.colors.teal }
+ *         ]
+ *       );
  *     }
  *     window.addEventListener("load", renderCharts);
  *     window.addEventListener("resize", renderCharts);
  *   </script>
  *
  * O renderizador de PDF chama window.renderCharts() explicitamente — então
- * defina sempre a função com esse nome e registre nos eventos load/resize.
+ * SEMPRE defina a função com esse nome e registre nos eventos load/resize.
+ *
+ * Detecção dark: se o .chart estiver dentro de um .slide.dark, grid e
+ * eixos clareiam automaticamente. Nada a configurar.
  */
 
 (function () {
@@ -49,21 +61,18 @@
     return Math.round(v).toString();
   }
 
-  /* Indices padrão do eixo x: ~7 marcas igualmente espaçadas. */
-  function defaultTicks(n) {
-    if (n <= 7) return Array.from({ length: n }, function (_, i) { return i; });
-    var ticks = [];
-    for (var t = 0; t < 7; t++) {
-      ticks.push(Math.round(scale(t, 0, 6, 0, n - 1)));
-    }
-    return ticks;
-  }
+  function isDark(el) { return el.closest(".dark") != null; }
+  function gridColor(dark) { return dark ? "rgba(255,255,255,.12)" : "rgba(15,25,35,.12)"; }
+  function axisColor(dark) { return dark ? "rgba(255,255,255,.62)" : "#64748b"; }
+  function legendColor(dark) { return dark ? "rgba(255,255,255,.78)" : "#475569"; }
 
-  function gridColor(dark) {
-    return dark ? "rgba(255,255,255,.12)" : "rgba(15,25,35,.12)";
-  }
-  function axisColor(dark) {
-    return dark ? "rgba(255,255,255,.62)" : "#64748b";
+  /* Marcas do eixo x igualmente espaçadas (default ~7). */
+  function spreadTicks(n, count) {
+    count = count || 7;
+    if (n <= count) return Array.from({ length: n }, function (_, i) { return i; });
+    var ticks = [];
+    for (var t = 0; t < count; t++) ticks.push(Math.round(scale(t, 0, count - 1, 0, n - 1)));
+    return ticks;
   }
 
   /* ---- Line chart -------------------------------------------------- */
@@ -72,11 +81,11 @@
     opts = opts || {};
     var w = el.clientWidth || 500;
     var h = el.clientHeight || 260;
-    var p = { l: 46, r: 22, t: 20, b: 36 };
-    var dark = el.closest(".dark") != null;
+    var p = { l: 48, r: 22, t: 20, b: 38 };
+    var dark = isDark(el);
     var labels = opts.labels || (series[0] ? series[0].data.map(function (_, i) { return String(i); }) : []);
     var n = labels.length;
-    var ticks = opts.xticks || defaultTicks(n);
+    var ticks = opts.xticks || spreadTicks(n, opts.labelCount);
 
     var all = series.reduce(function (acc, s) { return acc.concat(s.data); }, []);
     var min = opts.min != null ? opts.min : Math.min(0, Math.min.apply(null, all));
@@ -86,7 +95,6 @@
     var y = function (v) { return scale(v, min, max, h - p.b, p.t); };
 
     var svg = '<svg viewBox="0 0 ' + w + " " + h + '" width="100%" height="100%" role="img">';
-    svg += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="transparent"/>';
 
     for (var i = 0; i <= 4; i++) {
       var yy = scale(i, 0, 4, h - p.b, p.t);
@@ -94,6 +102,16 @@
         '" stroke="' + gridColor(dark) + '" stroke-width="1"/>';
     }
 
+    /* marcador vertical pontilhado (ex: "08:15") */
+    if (opts.markIndex != null && xs[opts.markIndex] != null) {
+      var mx = xs[opts.markIndex];
+      svg += '<line x1="' + mx + '" y1="' + p.t + '" x2="' + mx + '" y2="' + (h - p.b) +
+        '" stroke="' + colors.amber + '" stroke-width="1.6" stroke-dasharray="5 5"/>';
+      svg += '<text x="' + (mx + 6) + '" y="' + (p.t + 12) +
+        '" font-size="11" font-weight="900" fill="' + colors.amber + '">' + (opts.markLabel || "") + "</text>";
+    }
+
+    /* linha de threshold horizontal */
     if (opts.threshold != null) {
       var ty = y(opts.threshold);
       svg += '<line x1="' + p.l + '" y1="' + ty + '" x2="' + (w - p.r) + '" y2="' + ty +
@@ -112,13 +130,15 @@
       var lastX = xs[xs.length - 1];
       var lastY = y(s.data[s.data.length - 1]);
       svg += '<circle cx="' + lastX + '" cy="' + lastY + '" r="4" fill="' + s.color + '"/>';
-      svg += '<text x="' + (lastX - 6) + '" y="' + (lastY - 9) +
-        '" text-anchor="end" font-size="11" font-weight="800" fill="' + s.color + '">' +
-        s.name + "</text>";
+      if (!opts.hideEndLabels) {
+        svg += '<text x="' + (lastX - 6) + '" y="' + (lastY - 9) +
+          '" text-anchor="end" font-size="11" font-weight="800" fill="' + s.color + '">' +
+          s.name + "</text>";
+      }
     });
 
     ticks.forEach(function (i) {
-      if (i < 0 || i >= n) return;
+      if (i < 0 || i >= n || !labels[i]) return;
       svg += '<text x="' + xs[i] + '" y="' + (h - 12) +
         '" text-anchor="middle" font-size="11" fill="' + axisColor(dark) + '">' + labels[i] + "</text>";
     });
@@ -135,17 +155,76 @@
     el.innerHTML = svg;
   }
 
-  /* ---- Bar chart --------------------------------------------------- */
+  /* ---- Grouped bars (multi-série: hoje vs ontem) -------------------- */
+  function groupedBars(el, labels, series, opts) {
+    if (!el) return;
+    opts = opts || {};
+    var w = el.clientWidth || 500;
+    var h = el.clientHeight || 260;
+    var p = { l: 48, r: 18, t: 26, b: 36 };
+    var dark = isDark(el);
+    var all = series.reduce(function (acc, s) { return acc.concat(s.data); }, []);
+    var max = opts.max != null ? opts.max : Math.max.apply(null, all) * 1.15;
+    var groupW = (w - p.l - p.r) / labels.length;
+    var barW = groupW / (series.length + 1.2);
+    var y = function (v) { return scale(v, 0, max, h - p.b, p.t); };
+
+    var svg = '<svg viewBox="0 0 ' + w + " " + h + '" width="100%" height="100%" role="img">';
+
+    for (var i = 0; i <= 4; i++) {
+      var yy = scale(i, 0, 4, h - p.b, p.t);
+      svg += '<line x1="' + p.l + '" y1="' + yy + '" x2="' + (w - p.r) + '" y2="' + yy +
+        '" stroke="' + gridColor(dark) + '"/>';
+    }
+
+    series.forEach(function (s, si) {
+      s.data.forEach(function (v, i) {
+        var x = p.l + i * groupW + groupW * 0.17 + si * barW;
+        var yv = y(v);
+        svg += '<rect x="' + x + '" y="' + yv + '" width="' + (barW * 0.86) +
+          '" height="' + (h - p.b - yv) + '" fill="' + s.color + '"/>';
+      });
+    });
+
+    var ticks = opts.xticks || spreadTicks(labels.length, opts.labelCount || labels.length);
+    ticks.forEach(function (i) {
+      if (i < 0 || i >= labels.length || !labels[i]) return;
+      var x = p.l + i * groupW + groupW / 2;
+      svg += '<text x="' + x + '" y="' + (h - 12) +
+        '" text-anchor="middle" font-size="11" fill="' + axisColor(dark) + '">' + labels[i] + "</text>";
+    });
+
+    [0, 0.5, 1].forEach(function (t) {
+      var val = max * t;
+      var yv = y(val);
+      svg += '<text x="' + (p.l - 10) + '" y="' + (yv + 4) +
+        '" text-anchor="end" font-size="11" fill="' + axisColor(dark) + '">' + fmt(val) + "</text>";
+    });
+
+    /* legenda no topo-esquerdo */
+    var lx = p.l + 2;
+    series.forEach(function (s) {
+      svg += '<rect x="' + lx + '" y="2" width="10" height="10" fill="' + s.color + '"/>';
+      svg += '<text x="' + (lx + 15) + '" y="12" font-size="11" font-weight="800" fill="' +
+        legendColor(dark) + '">' + s.name + "</text>";
+      lx += s.name.length * 7 + 38;
+    });
+
+    svg += "</svg>";
+    el.innerHTML = svg;
+  }
+
+  /* ---- Bar chart (série única) ------------------------------------- */
   function barChart(el, series, opts) {
     if (!el) return;
     opts = opts || {};
     var w = el.clientWidth || 500;
     var h = el.clientHeight || 260;
-    var p = { l: 42, r: 20, t: 18, b: 36 };
-    var dark = el.closest(".dark") != null;
+    var p = { l: 44, r: 20, t: 18, b: 36 };
+    var dark = isDark(el);
     var labels = opts.labels || series.data.map(function (_, i) { return String(i); });
     var n = labels.length;
-    var ticks = opts.xticks || defaultTicks(n);
+    var ticks = opts.xticks || spreadTicks(n, opts.labelCount);
     var max = opts.max != null ? opts.max : Math.max.apply(null, series.data) * 1.12;
     var bw = (w - p.l - p.r) / series.data.length;
     var y = function (v) { return scale(v, 0, max, h - p.b, p.t); };
@@ -161,13 +240,13 @@
     series.data.forEach(function (v, i) {
       var x = p.l + i * bw + bw * 0.18;
       var yv = y(v);
-      var color = opts.hot && v >= opts.hot ? colors.red : series.color;
+      var color = opts.hot != null && v >= opts.hot ? colors.red : series.color;
       svg += '<rect x="' + x + '" y="' + yv + '" width="' + (bw * 0.64) +
         '" height="' + (h - p.b - yv) + '" fill="' + color + '"/>';
     });
 
     ticks.forEach(function (i) {
-      if (i < 0 || i >= n) return;
+      if (i < 0 || i >= n || !labels[i]) return;
       var x = p.l + i * bw + bw / 2;
       svg += '<text x="' + x + '" y="' + (h - 12) +
         '" text-anchor="middle" font-size="11" fill="' + axisColor(dark) + '">' + labels[i] + "</text>";
@@ -188,6 +267,7 @@
   window.ElvenDeck = {
     colors: colors,
     lineChart: lineChart,
+    groupedBars: groupedBars,
     barChart: barChart,
     fmt: fmt,
   };

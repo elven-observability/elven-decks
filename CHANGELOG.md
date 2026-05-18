@@ -7,6 +7,32 @@ Versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-05-17
+
+Correção de qualidade visual. O tema reconstruído na 0.1.1 saiu apertado e os
+gráficos vinham vazios; esta versão alinha o output ao deck de referência real
+`kontik-zupper-incident-2026-05-17`.
+
+### Fixed
+
+- `elven-deck.css` reescrito a partir do CSS real do deck kontik 05-17 (fonte da
+  verdade): cards com moldura e respiro corretos, `.content` com inset fixo,
+  `h1`/`h2` na escala certa, `.chart-card`/`.panel`/`.evidence`/`.timeline`/
+  `.matrix`/`.diagram` com proporções do deck aprovado. Acabou o visual apertado.
+- `elven-deck-charts.js` ganhou `groupedBars` (barras agrupadas hoje-vs-ontem) e
+  marcador vertical no `lineChart` — antes os slides de gráfico ficavam fracos
+  ou vazios.
+- Logo em fundo escuro: além da classe `.logo.on-dark`, o tema agora aplica
+  `filter: brightness(0) invert(1)` automaticamente em `.slide.cover`/`.slide.dark`.
+  O autor não precisa mais lembrar — a variante do slide resolve.
+- Lint L6 reconhece o token `cover` em qualquer posição da lista de classes
+  (ex: `class="slide layout-cover cover"`), exigindo o token isolado.
+
+### Added
+
+- Componente `.code-block` para hands-on de workshop (bloco mono com borda teal,
+  comentários e marcações `OK`).
+
 ## [0.1.1] — 2026-05-15
 
 Primeiro release público. A versão `0.1.0` foi queimada no registro npm (publicada e despublicada — o npm reserva números de versão permanentemente), então o primeiro release instalável é o `0.1.1`.

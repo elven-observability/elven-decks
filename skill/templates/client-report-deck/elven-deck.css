@@ -1,20 +1,29 @@
 /* @elven-observability/decks-skill — elven-deck.css
- * Sistema visual canônico de decks Elven Works. Locked.
- * Fonte: extraído verbatim do deck aprovado kontik-zupper-incident-24h.html.
- * Modelo: variante de slide (light / dark / cover / split-dark) + .content +
- * composição livre de componentes. NÃO existe "layout class" — você compõe.
+ *
+ * Tema canônico dos decks Elven Works. Fonte da verdade: o deck real
+ * kontik-zupper-incident-2026-05-17 (PS Elven), reproduzido fielmente.
+ *
+ * NÃO ajuste valores "no olho". Cada número aqui (insets, font-size,
+ * min-height, gaps) veio de um deck aprovado e entregue. Mexer = drift.
+ *
+ * Modelo de composição:
+ *   .slide                  moldura 1280x720 (variantes: .cover, .dark)
+ *     .logo                 logo Elven, canto superior direito
+ *     .content              caixa de conteúdo (inset fixo)
+ *       .kicker             etiqueta de seção (traço + caps)
+ *       h1 / h2             título do slide
+ *       <componentes>       panel, chart-card, timeline, evidence, etc.
+ *     .source               crédito/fonte, rodapé esquerdo
+ *   .slide::after           numeração automática (counter)
  */
 
 :root {
   --w: 1280px;
   --h: 720px;
-
   --ink: #0f1923;
-  --ink-2: #142638;
   --paper: #f4f7f8;
   --white: #ffffff;
   --muted: #64748b;
-
   --teal: #00bfa5;
   --teal-2: #00897b;
   --cyan: #00e5ff;
@@ -23,29 +32,17 @@
   --red: #ff5252;
   --amber: #fbbf24;
   --violet: #7c3aed;
-
   --line: rgba(15, 25, 35, 0.14);
-
-  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
 }
 
 * { box-sizing: border-box; }
-
 html, body {
   margin: 0;
   background: #081018;
   color: var(--white);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-
 body { counter-reset: slide; }
-
-/* ============================================================
- * Frame — slide, variantes, numeração, content box
- * ============================================================ */
-
 .deck { width: 100%; }
 
 .slide {
@@ -60,22 +57,14 @@ body { counter-reset: slide; }
   break-after: page;
   counter-increment: slide;
 }
-
 .slide.dark { background: #0f1923; color: var(--white); }
-
 .slide.cover {
   background:
-    radial-gradient(circle at 86% 18%, rgba(215, 255, 99, 0.22), transparent 26%),
-    radial-gradient(circle at 15% 80%, rgba(0, 229, 255, 0.18), transparent 30%),
-    linear-gradient(135deg, #0d47a1 0%, #00897b 52%, #00bfa5 100%);
+    radial-gradient(circle at 88% 16%, rgba(215, 255, 99, 0.2), transparent 26%),
+    radial-gradient(circle at 13% 80%, rgba(0, 229, 255, 0.18), transparent 30%),
+    linear-gradient(135deg, #0d47a1 0%, #00897b 54%, #00bfa5 100%);
   color: var(--white);
 }
-
-.slide.split-dark {
-  background: linear-gradient(90deg, #0f1923 0 48%, #f4f7f8 48% 100%);
-  color: var(--ink);
-}
-
 .slide::after {
   content: counter(slide, decimal-leading-zero);
   position: absolute;
@@ -86,36 +75,16 @@ body { counter-reset: slide; }
   color: rgba(100, 116, 139, 0.74);
   font-weight: 700;
 }
-.slide.dark::after,
-.slide.cover::after { color: rgba(255, 255, 255, 0.55); }
+.slide.dark::after, .slide.cover::after { color: rgba(255, 255, 255, 0.55); }
 
-/* O .content é a moldura editorial: tudo do slide mora dentro dele. */
-.content {
-  position: absolute;
-  inset: 52px 72px 54px 72px;
-}
+.content { position: absolute; inset: 52px 72px 54px 72px; }
 
-/* ============================================================
- * Logo — canto superior direito, branco automático em fundo escuro
- * ============================================================ */
-
-.logo {
-  position: absolute;
-  right: 68px;
-  top: 42px;
-  width: 104px;
-  height: auto;
-}
-/* Branco automático em cover/dark. .on-dark é o escape hatch manual
- * (ex.: logo sobre painel escuro num slide light). */
-.slide.cover .logo,
-.slide.dark .logo,
+.logo { position: absolute; right: 68px; top: 42px; width: 104px; height: auto; }
 .logo.on-dark { filter: brightness(0) invert(1); }
+/* Salvaguarda: mesmo sem a classe .on-dark, o logo fica branco em fundo
+ * escuro. O autor não precisa lembrar — a variante do slide resolve. */
+.slide.cover .logo, .slide.dark .logo { filter: brightness(0) invert(1); }
 .logo.on-light { filter: none; }
-
-/* ============================================================
- * Tipografia
- * ============================================================ */
 
 .kicker {
   display: inline-flex;
@@ -129,8 +98,7 @@ body { counter-reset: slide; }
   text-transform: uppercase;
   color: var(--teal-2);
 }
-.dark .kicker,
-.cover .kicker { color: var(--lime); }
+.dark .kicker, .cover .kicker { color: var(--lime); }
 .kicker::before {
   content: "";
   width: 24px;
@@ -140,37 +108,28 @@ body { counter-reset: slide; }
 }
 
 h1, h2, h3, p { margin: 0; }
-
 h1 {
-  font-size: 68px;
-  line-height: 1.02;
-  letter-spacing: -1.6px;
+  font-size: 62px;
+  line-height: 1.03;
+  letter-spacing: -0.8px;
   font-weight: 900;
-  max-width: 940px;
+  max-width: 970px;
 }
-
 h2 {
-  font-size: 42px;
+  font-size: 40px;
   line-height: 1.08;
-  letter-spacing: -0.4px;
   font-weight: 900;
-  max-width: 980px;
+  max-width: 1000px;
 }
-
-h3 {
-  font-size: 20px;
-  line-height: 1.16;
-  font-weight: 850;
-}
+h3 { font-size: 20px; line-height: 1.16; font-weight: 850; }
 
 .sub {
   margin-top: 20px;
-  max-width: 840px;
-  font-size: 22px;
+  max-width: 900px;
+  font-size: 21px;
   line-height: 1.42;
   color: rgba(255, 255, 255, 0.9);
 }
-
 .light-sub {
   margin-top: 13px;
   max-width: 920px;
@@ -178,16 +137,16 @@ h3 {
   font-size: 18px;
   line-height: 1.42;
 }
+.dark .light-sub { color: rgba(255, 255, 255, 0.72); }
 
-.mono {
-  font-family: var(--font-mono);
+.mono, code {
+  font-family: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
   font-size: 0.9em;
 }
+code { background: rgba(15, 25, 35, 0.07); padding: 1px 4px; }
+.dark code { background: rgba(255, 255, 255, 0.08); }
 
-/* ============================================================
- * Cover — metric-rail
- * ============================================================ */
-
+/* Cover — faixa de métricas ----------------------------------------- */
 .metric-rail {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -197,87 +156,36 @@ h3 {
   right: 72px;
   bottom: 56px;
 }
-.metric {
-  border-top: 1px solid rgba(255, 255, 255, 0.34);
-  padding-top: 14px;
-}
-.metric .value {
-  font-size: 34px;
-  line-height: 1;
-  font-weight: 900;
-  color: var(--white);
-}
-.metric .label {
-  margin-top: 8px;
-  font-size: 13px;
-  line-height: 1.28;
-  color: rgba(255, 255, 255, 0.74);
-}
+.metric { border-top: 1px solid rgba(255, 255, 255, 0.34); padding-top: 14px; }
+.metric .value { font-size: 34px; line-height: 1; font-weight: 900; color: var(--white); }
+.metric .label { margin-top: 8px; font-size: 13px; line-height: 1.28; color: rgba(255, 255, 255, 0.76); }
 
-/* ============================================================
- * Grids de composição
- * ============================================================ */
+/* Grades ------------------------------------------------------------ */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 28px; }
+.three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 28px; }
 
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 34px;
-  margin-top: 30px;
-}
-.three-col {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  margin-top: 30px;
-}
-.score-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 26px;
-  margin-top: 26px;
-}
-
-/* ============================================================
- * Panel — card branco genérico
- * ============================================================ */
-
+/* Panel — card branco genérico -------------------------------------- */
 .panel {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid var(--line);
   padding: 22px;
   min-height: 132px;
-  color: var(--ink);            /* card branco: texto escuro mesmo em slide .dark */
 }
-.panel.dark-panel {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.14);
-  color: var(--white);
-}
+.panel.dark-panel { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.14); color: var(--white); }
 .panel h3 { margin-bottom: 10px; }
-.panel p, .panel li {
-  font-size: 15px;
-  line-height: 1.38;
-  color: #4b5b6b;
-}
-/* Texto claro só no painel explicitamente escuro — NÃO por estar em slide dark. */
-.panel.dark-panel p, .panel.dark-panel li { color: rgba(255, 255, 255, 0.74); }
+.panel p, .panel li { font-size: 15px; line-height: 1.38; color: #4b5b6b; }
+.dark .panel p, .dark .panel li, .panel.dark-panel p, .panel.dark-panel li { color: rgba(255, 255, 255, 0.74); }
 .panel ul { margin: 10px 0 0; padding-left: 18px; }
 
-/* ============================================================
- * Chart card
- * ============================================================ */
-
+/* Chart card -------------------------------------------------------- */
 .chart-card {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid var(--line);
   padding: 22px 22px 16px;
-  min-height: 372px;
+  min-height: 368px;
 }
-.chart-card.compact { min-height: 282px; }
-.dark .chart-card {
-  background: rgba(255, 255, 255, 0.055);
-  border-color: rgba(255, 255, 255, 0.14);
-}
+.chart-card.compact { min-height: 290px; }
+.dark .chart-card { background: rgba(255, 255, 255, 0.055); border-color: rgba(255, 255, 255, 0.14); }
 .chart-title {
   display: flex;
   justify-content: space-between;
@@ -285,67 +193,22 @@ h3 {
   gap: 16px;
   margin-bottom: 10px;
 }
-.chart-title strong {
-  font-size: 15px;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
+.chart-title strong { font-size: 15px; letter-spacing: 0.3px; text-transform: uppercase; }
 .chart-title span { font-size: 12px; color: var(--muted); }
 .dark .chart-title span { color: rgba(255, 255, 255, 0.58); }
-
-.chart { width: 100%; height: 278px; }
+.chart { width: 100%; height: 268px; }
 .chart.small { height: 188px; }
-
-.note {
-  margin-top: 12px;
-  font-size: 13px;
-  line-height: 1.35;
-  color: #5d6b7b;
-}
+.note { margin-top: 12px; font-size: 13px; line-height: 1.35; color: #5d6b7b; }
 .dark .note { color: rgba(255, 255, 255, 0.65); }
 
-/* ============================================================
- * Tags
- * ============================================================ */
-
-.tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 20px;
-}
-.tag {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  padding: 7px 10px;
-  color: var(--ink);
-  background: rgba(0, 191, 165, 0.12);
-  border: 1px solid rgba(0, 137, 123, 0.28);
-}
-.dark .tag {
-  color: var(--white);
-  background: rgba(0, 229, 255, 0.12);
-  border-color: rgba(0, 229, 255, 0.22);
-}
-
-/* ============================================================
- * Timeline — grid de até 6 colunas com marcadores sobre régua
- * ============================================================ */
-
+/* Timeline ---------------------------------------------------------- */
 .timeline {
-  margin-top: 30px;
+  margin-top: 28px;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  border-top: 2px solid var(--ink);
+  border-top: 2px solid currentColor;
 }
-.dark .timeline { border-color: rgba(255, 255, 255, 0.35); }
-.tl-item {
-  position: relative;
-  padding: 28px 14px 0 0;
-  min-height: 228px;
-}
+.tl-item { position: relative; padding: 28px 14px 0 0; min-height: 220px; }
 .tl-item::before {
   content: "";
   position: absolute;
@@ -357,237 +220,119 @@ h3 {
 }
 .tl-item.hot::before { background: var(--red); }
 .tl-item.warn::before { background: var(--amber); }
-.tl-time { font-size: 26px; font-weight: 900; line-height: 1; }
-.tl-title {
-  margin-top: 10px;
-  font-size: 14px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-}
-.tl-copy {
-  margin-top: 10px;
-  font-size: 14px;
-  line-height: 1.33;
-  color: #4b5b6b;
-}
+.tl-time { font-size: 25px; font-weight: 900; line-height: 1; }
+.tl-title { margin-top: 10px; font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.1px; }
+.tl-copy { margin-top: 10px; font-size: 14px; line-height: 1.32; color: #4b5b6b; }
 .dark .tl-copy { color: rgba(255, 255, 255, 0.68); }
 
-/* ============================================================
- * Callout — destaque tipado. Escuro por padrão; .light = branco.
- * ============================================================ */
-
+/* Callout ----------------------------------------------------------- */
 .callout {
   background: var(--ink);
   color: var(--white);
-  padding: 24px 26px;
-  margin-top: 24px;
+  padding: 22px 24px;
+  margin-top: 22px;
   border-left: 8px solid var(--teal);
+  font-size: 17px;
+  line-height: 1.38;
 }
-.callout.light {
-  background: #ffffff;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-left: 8px solid var(--teal);
-}
+.callout.light { background: #fff; color: var(--ink); border: 1px solid var(--line); border-left: 8px solid var(--teal); }
 .callout strong { color: var(--lime); }
 .callout.light strong { color: var(--teal-2); }
 
-/* ============================================================
- * Evidence — cards com tarja superior grossa
- * ============================================================ */
-
-.evidence-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
-  margin-top: 18px;
-}
-.evidence {
-  padding: 18px;
-  border-top: 5px solid var(--teal);
-  background: #ffffff;
-  min-height: 124px;
-  color: var(--ink);            /* card branco: texto escuro mesmo em slide .dark */
-}
+/* Evidence ---------------------------------------------------------- */
+.evidence-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+.evidence { padding: 18px; border-top: 5px solid var(--teal); background: #fff; min-height: 118px; }
 .evidence.warn { border-color: var(--amber); }
 .evidence.hot { border-color: var(--red); }
-.evidence .big { font-size: 30px; font-weight: 900; line-height: 1; }
-.evidence .small {
-  margin-top: 8px;
-  font-size: 13px;
-  line-height: 1.3;
-  color: #526273;
-}
+.evidence .big { font-size: 29px; font-weight: 900; line-height: 1; }
+.evidence .small { margin-top: 8px; font-size: 13px; line-height: 1.3; color: #526273; }
+.dark .evidence { background: rgba(255, 255, 255, 0.06); }
+.dark .evidence .small { color: rgba(255, 255, 255, 0.7); }
 
-/* ============================================================
- * Matrix — tabela de dados (4 colunas por padrão)
- * ============================================================ */
-
-.matrix {
-  margin-top: 24px;
-  border-top: 1px solid var(--line);
-}
-.matrix-row {
-  display: grid;
-  grid-template-columns: 0.9fr 1.5fr 1fr 1fr;
-  border-bottom: 1px solid var(--line);
-}
-.matrix-row > div {
-  padding: 13px 14px;
-  font-size: 13px;
-  line-height: 1.25;
-}
-.matrix-head > div {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  color: #65758a;
-}
+/* Matrix (tabela de ações) ------------------------------------------ */
+.matrix { margin-top: 24px; border-top: 1px solid var(--line); }
+.matrix-row { display: grid; grid-template-columns: 0.85fr 1.45fr 1.1fr 1fr; border-bottom: 1px solid var(--line); }
+.matrix-row > div { padding: 12px 13px; font-size: 13px; line-height: 1.25; }
+.matrix-head > div { font-size: 11px; font-weight: 900; letter-spacing: 1.3px; text-transform: uppercase; color: #65758a; }
 .risk { font-weight: 850; }
 .risk.high { color: var(--red); }
 .risk.med { color: #b45309; }
 .risk.low { color: var(--teal-2); }
 
-/* ============================================================
- * Code block
- * ============================================================ */
-
-.code {
-  background: #0b1220;
-  color: #d7ffef;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.42;
-  padding: 16px;
-  white-space: pre-wrap;
-  min-height: 102px;
-}
-
-/* ============================================================
- * Diagram — nós + setas
- * ============================================================ */
-
+/* Diagrama (nós + setas) -------------------------------------------- */
 .diagram {
+  margin-top: 44px;
   display: grid;
-  grid-template-columns: 1fr 42px 1fr 42px 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr 64px 1fr 64px 1fr;
   align-items: stretch;
-  margin-top: 34px;
+  gap: 14px;
 }
-.node {
-  background: #ffffff;
-  border: 1px solid var(--line);
-  padding: 22px;
-  min-height: 178px;
-  color: var(--ink);            /* card branco: texto escuro mesmo em slide .dark */
-}
-.node h3 { color: var(--ink); }
-.node p {
-  margin-top: 11px;
-  font-size: 14px;
-  line-height: 1.36;
-  color: #526273;
-}
-.arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  color: var(--teal-2);
-  font-weight: 900;
-}
+.node { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16); padding: 22px; min-height: 170px; }
+.node p { margin-top: 12px; color: rgba(255, 255, 255, 0.72); font-size: 16px; line-height: 1.38; }
+.arrow { display: grid; place-items: center; color: var(--lime); font-size: 44px; font-weight: 900; }
+/* Diagrama em slide claro: nós ganham fundo branco */
+.slide:not(.dark) .node { background: #fff; border-color: var(--line); }
+.slide:not(.dark) .node p { color: #4b5b6b; }
+.slide:not(.dark) .arrow { color: var(--teal-2); }
 
-/* ============================================================
- * Decision — par de cards sim/não
- * ============================================================ */
+/* Decisão (dois lados) ---------------------------------------------- */
+.decision { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+.decision > div { background: #fff; border: 1px solid var(--line); padding: 22px; }
+.dark .decision > div { background: rgba(255, 255, 255, 0.07); border-color: rgba(255, 255, 255, 0.16); }
 
-.decision {
-  margin-top: 24px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
-.decision .yes,
-.decision .no {
-  padding: 20px 22px;
-  background: #ffffff;
-  border: 1px solid var(--line);
-  color: var(--ink);            /* card branco: texto escuro mesmo em slide .dark */
-}
-.decision .yes { border-top: 6px solid var(--teal); }
-.decision .no { border-top: 6px solid var(--red); }
-.decision h3 { margin-bottom: 9px; }
-.decision .light-sub { margin-top: 0; }
-
-/* ============================================================
- * Takeaways — fechamento (lista de pontos)
- * ============================================================ */
-
-.takeaways {
-  margin-top: 28px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px 30px;
-}
+/* Takeaways (fechamento de workshop) -------------------------------- */
+.takeaways { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 26px; margin-top: 28px; }
 .takeaway {
-  display: flex;
-  gap: 13px;
+  position: relative;
+  padding-left: 26px;
   font-size: 17px;
   line-height: 1.4;
+  color: var(--ink);
 }
+.dark .takeaway { color: rgba(255, 255, 255, 0.92); }
 .takeaway::before {
   content: "";
-  flex: none;
+  position: absolute;
+  left: 0;
+  top: 7px;
   width: 12px;
   height: 12px;
-  margin-top: 5px;
   background: var(--teal);
 }
-.dark .takeaway::before { background: var(--lime); }
 
-/* ============================================================
- * Source — linha de fonte no rodapé esquerdo
- * ============================================================ */
-
-.source {
-  position: absolute;
-  left: 72px;
-  bottom: 30px;
-  font-size: 10px;
-  letter-spacing: 0.3px;
-  color: rgba(100, 116, 139, 0.78);
+/* Bloco de código (hands-on, trechos longos) ------------------------ */
+.code-block {
+  margin-top: 18px;
+  background: #0b1622;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid var(--teal);
+  padding: 18px 20px;
+  font-family: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #d6e2ec;
+  white-space: pre-wrap;
+  overflow: hidden;
 }
-.dark .source,
-.cover .source { color: rgba(255, 255, 255, 0.52); }
+.code-block .cmt { color: #5f7287; }
+.code-block .ok { color: var(--teal); }
 
-.footer-link {
-  font-size: 11px;
-  color: #5d6b7b;
-  word-break: break-all;
+/* Source / créditos ------------------------------------------------- */
+.source { position: absolute; left: 72px; bottom: 30px; font-size: 10px; letter-spacing: 0.3px; color: rgba(100, 116, 139, 0.86); }
+.dark .source, .cover .source { color: rgba(255, 255, 255, 0.55); }
+
+/* Tags -------------------------------------------------------------- */
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.tag {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  color: var(--ink);
+  background: rgba(0, 191, 165, 0.12);
+  border: 1px solid rgba(0, 137, 123, 0.28);
 }
+.dark .tag { color: var(--white); background: rgba(0, 229, 255, 0.12); border-color: rgba(0, 229, 255, 0.22); }
 
-/* ============================================================
- * Print
- * ============================================================ */
-
-@page {
-  size: 1280px 720px;
-  margin: 0;
-}
-
-@media print {
-  html, body {
-    width: var(--w);
-    background: white;
-  }
-  .slide {
-    margin: 0;
-    box-shadow: none;
-  }
-  * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-}
+@page { size: 1280px 720px; margin: 0; }

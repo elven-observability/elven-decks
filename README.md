@@ -83,7 +83,7 @@ npx @elven-observability/decks-skill install
 ### Conferir que deu certo
 
 ```bash
-decks-skill --version              # → 0.1.1
+decks-skill --version              # → 0.1.2
 ls ~/.claude/skills/decks-skill/    # → SKILL.md, templates/, themes/, ...
 ```
 

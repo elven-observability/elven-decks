@@ -1,6 +1,6 @@
 {
   "name": "@elven-observability/decks-skill",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Anthropic skill-creator pack codifying Elven Works presentation deck standards: 2 canonical deck types (client-report, workshop-mentorship), 12 locked layouts, binary lint, and Puppeteer PDF+preview rendering. Sibling of @elven-observability/docs-skill.",
   "license": "MIT",
   "author": "Elven Works <docs@elven.works>",

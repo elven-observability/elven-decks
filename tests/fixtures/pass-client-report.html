@@ -3,191 +3,240 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kontik/Zupper | Análise executiva 24h</title>
+    <title>Kontik/Zupper | Investigação de queda de vendas | 17/05/2026</title>
     <link rel="stylesheet" href="elven-deck.css" />
   </head>
   <body>
     <main class="deck">
-
-      <!-- 01 — cover -->
-      <section class="slide cover">
-        <img class="logo" src="assets/elven-logo.png" alt="Elven" />
+      <section class="slide layout-cover cover">
+        <img class="logo on-dark" src="assets/elven-logo.png" alt="Elven" />
         <div class="content">
-          <div class="kicker">Kontik/Zupper - incidente 24h</div>
-          <h1>A virada das 14h aponta para o fluxo de pedido e pagamento.</h1>
+          <div class="kicker">Kontik/Zupper - análise de crise</div>
+          <h1>A queda de vendas se alinha a falhas no canal Google Flights e a erros DSG/SABRE.</h1>
           <p class="sub">
-            Análise executiva de logs, métricas HTTP/Beyla, Redis e MySQL entre
-            07/05/2026 20:00 e 08/05/2026 20:00, horário de Brasília.
+            Investigação read-only de vendas, logs, métricas HTTP/Beyla, MySQL e VMs em 17/05/2026, com comparação contra 16/05 no mesmo período.
           </p>
         </div>
         <div class="metric-rail">
           <div class="metric">
-            <div class="value">13:47</div>
-            <div class="label">último erro fatal de <span class="mono">verifyPaymentFormByOrderId</span> antes da virada</div>
+            <div class="value">-42,1%</div>
+            <div class="label">orders hoje vs ontem até 11:13 BRT: 565 contra 975</div>
           </div>
           <div class="metric">
-            <div class="value">10:00</div>
-            <div class="label">início da tempestade de retry em reserva, sustentada até a noite</div>
+            <div class="value">-67,8%</div>
+            <div class="label">reservas com <span class="mono">ZP_GFS</span>: 29 hoje contra 90 ontem</div>
           </div>
           <div class="metric">
-            <div class="value">~90%</div>
-            <div class="label">janelas periódicas de disco ocupado nos MySQLs</div>
+            <div class="value">08:15</div>
+            <div class="label">início do spike de <span class="mono">Google-Flights-Search-Spackle</span></div>
           </div>
           <div class="metric">
-            <div class="value">+92%</div>
-            <div class="label">ProcessReservations, de 13-14h para 14-15h BRT</div>
+            <div class="value">5.162</div>
+            <div class="label">pico de conexões no MYSQL-SERVER-01 no recorte de 24h</div>
           </div>
         </div>
-        <div class="source">Fonte: Grafana orgId 229, Loki + Mimir, cliente=kontik, ambiente=prod.</div>
+        <div class="source">Fonte: Grafana orgId 229, EOAdmin MCP, Loki, Mimir, MySQL e discovery readonly em VM.</div>
       </section>
 
-      <!-- 02 — resumo executivo -->
-      <section class="slide">
+      <section class="slide layout-executive-summary">
         <img class="logo" src="assets/elven-logo.png" alt="Elven" />
         <div class="content">
           <div class="kicker">Resumo executivo</div>
-          <h2>A melhora das vendas combina mais com desbloqueio de pedido/pagamento do que com normalização completa de infraestrutura.</h2>
+          <h2>O problema não parece ser CPU/memória geral: o funil caiu, o Google gerou uma tempestade de Unauthorized e o DSG acusa credencial SABRE.</h2>
           <div class="three-col">
             <div class="panel">
-              <h3>1. Infra estava pressionada de verdade</h3>
-              <p>Os MySQLs tiveram janelas de disco ocupado perto de 90% e um pico de conexões no MYSQL-SERVER-01 às 01:00 BRT.</p>
+              <h3>1. A queda de negócio é real</h3>
+              <p>
+                No mesmo corte de horário, <code>orders</code> caiu de 975 para 565 e
+                <code>air_reservation</code> caiu de 1269 para 714. A pior faixa completa foi 07h-08h BRT.
+              </p>
             </div>
             <div class="panel">
-              <h3>2. O negócio voltou antes da infra "zerar"</h3>
-              <p>Depois das 14h, reservas e pagamentos sobem, mas DSG, Redis e MySQL continuam com volume alto.</p>
+              <h3>2. Google Flights é o maior desvio</h3>
+              <p>
+                O canal <code>Google-Flights-Search-Spackle</code> saltou de 55 logs na hora comparável de ontem para 100.524 na última hora observada hoje.
+              </p>
             </div>
             <div class="panel">
-              <h3>3. O ponto de virada está no fluxo crítico</h3>
-              <p>O erro fatal em pedidos com <span class="mono">payment_form_id</span> nulo some na janela imediata de 14h-18h.</p>
+              <h3>3. DSG/SABRE segue como causa provável</h3>
+              <p>
+                Os logs de DSG mostram <code>CredencialInvalida</code> e ausência de credencial para source/filtro <code>SABRE</code>, sem nome <code>ZP_*</code> explícito.
+              </p>
             </div>
           </div>
           <div class="callout light">
-            <strong>Leitura final:</strong> houve combinação de pressão de banco/disco, retry storm de reserva e erro de aplicação/dados no caminho de pedido/pagamento. A virada das 14h aponta mais para o terceiro item.
+            <strong>Leitura final:</strong> a hipótese mais forte é combinação de queda funcional em venda aérea com credencial/token do Google Flights inválido e falha de mapeamento SABRE no DSG. MySQL teve pico grande de conexões, mas sem slow queries e com threads running baixos, então parece efeito/amplificador, não causa única.
           </div>
         </div>
-        <div class="source">Período analisado: 07/05/2026 20:00 a 08/05/2026 20:00 BRT.</div>
+        <div class="source">Corte do SQL: 17/05/2026 11:13:45 BRT. Sem reinício ou alteração em produção.</div>
       </section>
 
-      <!-- 03 — linha do tempo (dark) -->
-      <section class="slide dark">
-        <img class="logo" src="assets/elven-logo.png" alt="Elven" />
+      <section class="slide layout-timeline dark">
+        <img class="logo on-dark" src="assets/elven-logo.png" alt="Elven" />
         <div class="content">
           <div class="kicker">Linha do tempo</div>
-          <h2>As 24h mostram três fases: pressão forte, madrugada degradada e retomada com risco residual.</h2>
+          <h2>A queda começa antes do spike Google; depois o Google amplifica carga, logs e ruído operacional.</h2>
           <div class="timeline">
-            <div class="tl-item hot">
-              <div class="tl-time">20h-23h</div>
-              <div class="tl-title">Entrada em crise</div>
-              <div class="tl-copy">Busca alta, DSG com erros e MySQL com QPS elevado. Disco já chega perto de 90% às 20h.</div>
+            <div class="tl-item warn">
+              <div class="tl-time">00h-05h</div>
+              <div class="tl-title">Base abaixo de ontem</div>
+              <div class="tl-copy">Pedidos já ficam abaixo do dia anterior, mas ainda sem ruptura aguda de Google.</div>
             </div>
             <div class="tl-item hot">
-              <div class="tl-time">00h-02h</div>
-              <div class="tl-title">Backlog no banco</div>
-              <div class="tl-copy">MYSQL-SERVER-01 chega a 2.228 conexões às 01h, QPS cai para ~1.067/s.</div>
+              <div class="tl-time">06h-08h</div>
+              <div class="tl-title">Queda do funil</div>
+              <div class="tl-copy">Orders: 12 vs 32 às 06h, 27 vs 92 às 07h, 32 vs 94 às 08h.</div>
+            </div>
+            <div class="tl-item hot">
+              <div class="tl-time">08:15</div>
+              <div class="tl-title">Google dispara</div>
+              <div class="tl-copy">Logs do Google saltam de centenas para 3.520 por 15min, com <code>LoginError</code>/<code>Unauthorized</code>.</div>
+            </div>
+            <div class="tl-item hot">
+              <div class="tl-time">08:30</div>
+              <div class="tl-title">Conexões no banco</div>
+              <div class="tl-copy">MYSQL-SERVER-01 passa de 4.801 conexões na amostra de 08:30; o pico de 24h foi 5.162 perto de 09:12.</div>
             </div>
             <div class="tl-item warn">
-              <div class="tl-time">03h-08h</div>
-              <div class="tl-title">Vale operacional</div>
-              <div class="tl-copy">Baixo volume. Persistem janelas de disco ocupado nos MySQLs.</div>
-            </div>
-            <div class="tl-item hot">
-              <div class="tl-time">10h</div>
-              <div class="tl-title">Retry storm</div>
-              <div class="tl-copy"><span class="mono">ReservationQueueRetryLimiter</span> salta de dezenas/h para ~15k/h.</div>
-            </div>
-            <div class="tl-item warn">
-              <div class="tl-time">13:47-14h</div>
-              <div class="tl-title">Virada do fluxo</div>
-              <div class="tl-copy">Último erro fatal de <span class="mono">verifyPaymentFormByOrderId</span>. ProcessReservations dobra na hora seguinte.</div>
+              <div class="tl-time">09h-10h</div>
+              <div class="tl-title">DSG/SABRE continua</div>
+              <div class="tl-copy">Assinaturas DSG/availability seguem altas, com erro de credencial para source/filtro SABRE.</div>
             </div>
             <div class="tl-item">
-              <div class="tl-time">14h-20h</div>
-              <div class="tl-title">Retomada com ruído</div>
-              <div class="tl-copy">Reservas e pagamentos sobem. MySQL/Redis seguem pressionados; risco residual.</div>
+              <div class="tl-time">10h-11h</div>
+              <div class="tl-title">Melhora parcial</div>
+              <div class="tl-copy">Vendas sobem em volume absoluto, mas ainda ficam em ~65% de ontem na última hora.</div>
             </div>
           </div>
         </div>
-        <div class="source">Timestamps por hora representam janelas de 1h terminando no horário exibido.</div>
+        <div class="source">Horário de Brasília. Janelas de log por 15min e métricas por 5m/15m.</div>
       </section>
 
-      <!-- 04 — ponto de virada: chart + evidence -->
-      <section class="slide">
+      <section class="slide layout-chart-and-cards">
         <img class="logo" src="assets/elven-logo.png" alt="Elven" />
         <div class="content">
-          <div class="kicker">Ponto de virada</div>
-          <h2>Os erros fatais de pedido/pagamento caem na janela em que os indicadores de negócio voltam a subir.</h2>
-          <div class="score-grid">
+          <div class="kicker">Sinal de negócio</div>
+          <h2>O comparativo por hora mostra queda ampla, principalmente entre 06h e 08h BRT.</h2>
+          <div class="two-col">
             <div class="chart-card">
-              <div class="chart-title">
-                <strong>Erros críticos do caminho pedido/pagamento</strong>
-                <span>verifyPaymentFormByOrderId e Payment CRITICAL</span>
-              </div>
-              <div class="chart" id="chart-critical"></div>
-              <div class="note">
-                O erro de <span class="mono">verifyPaymentFormByOrderId</span> aparece até 13:47:52 BRT e some na janela imediata pós-14h.
-              </div>
+              <div class="chart-title"><strong>Orders hoje vs ontem</strong><span>por hora BRT</span></div>
+              <div class="chart" data-chart="orders"></div>
+              <div class="note">Acumulado até 11:13 BRT: 565 hoje vs 975 ontem, queda de 42,1%.</div>
             </div>
-            <div>
-              <div class="evidence-row" style="grid-template-columns: 1fr; margin-top: 0;">
-                <div class="evidence hot">
-                  <div class="big">payment_form_id</div>
-                  <div class="small">O código espera string, mas alguns pedidos/reservas aéreas retornavam nulo.</div>
-                </div>
-                <div class="evidence warn">
-                  <div class="big">13:50</div>
-                  <div class="small">Último <span class="mono">Payment CRITICAL</span> relevante antes da janela de recuperação.</div>
-                </div>
-                <div class="evidence">
-                  <div class="big">+31%</div>
-                  <div class="small">Payment channel cresce de 205/h para 248/h na hora seguinte a 14h.</div>
-                </div>
-              </div>
+            <div class="chart-card">
+              <div class="chart-title"><strong>Air reservation hoje vs ontem</strong><span>por hora BRT</span></div>
+              <div class="chart" data-chart="air"></div>
+              <div class="note">Reservas aéreas: 714 hoje vs 1269 ontem, queda de 43,7% no mesmo período.</div>
             </div>
           </div>
         </div>
-        <div class="source">Inspeção read-only: OrdersRepository::verifyPaymentFormByOrderId e Payment.php em api_v14.</div>
+        <div class="source">SQL read-only no datasource MySQL kontik-zupper-mysql-101, tabelas orders e air_reservation.</div>
       </section>
 
-      <!-- 05 — fila de reserva: chart + code + callout -->
-      <section class="slide">
+      <section class="slide layout-chart-and-cards dark">
+        <img class="logo on-dark" src="assets/elven-logo.png" alt="Elven" />
+        <div class="content">
+          <div class="kicker">Google Flights</div>
+          <h2>O spike de <code>LoginError / Unauthorized</code> começa às 08:15 BRT e passa de 100 mil eventos na última hora.</h2>
+          <div class="two-col">
+            <div class="chart-card">
+              <div class="chart-title"><strong>Google x LoginError</strong><span>contagem por 15min</span></div>
+              <div class="chart" data-chart="google"></div>
+              <div class="note">Quase todo <code>LoginError</code> da janela contém o user-agent <code>Google-Flights-Search-Spackle</code>.</div>
+            </div>
+            <div class="panel dark-panel" style="min-height: 368px;">
+              <h3>O que apareceu nos logs</h3>
+              <ul>
+                <li><code>User-Agent=Google-Flights-Search-Spackle</code>.</li>
+                <li><code>channel=LoginError</code>, mensagem <code>Unauthorized</code>, nível crítico.</li>
+                <li>Header de autorização observado como inválido/malformado, redigido no report.</li>
+                <li>Hoje 00h-11h11: 219.491 eventos Google; ontem mesma janela: 150.</li>
+                <li>Última hora: 100.524 eventos Google; ontem mesma hora: 55.</li>
+                <li>Últimos 30min: 50.184 <code>LoginError/Unauthorized</code>; 49.829 com Google.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="source">Loki: service=kontik-zupper-api-v14, client=kontik, environment=prod. Tokens e payloads foram redigidos.</div>
+      </section>
+
+      <section class="slide layout-thesis-evidence">
         <img class="logo" src="assets/elven-logo.png" alt="Elven" />
         <div class="content">
-          <div class="kicker">Fila de reserva</div>
-          <h2>O retry storm começa às 10h e continua depois da melhora, então é causa de pressão, não explicação única da virada.</h2>
-          <div class="score-grid">
-            <div class="chart-card">
-              <div class="chart-title">
-                <strong>ReservationQueueRetryLimiter por hora</strong>
-                <span>WARNING count</span>
-              </div>
-              <div class="chart" id="chart-retry"></div>
-              <div class="note">
-                O salto sai de dezenas/h para ~15k/h. Em 5 minutos, o padrão estabiliza em ~1.2k-1.4k eventos.
-              </div>
+          <div class="kicker">Infra e VMs</div>
+          <h2>A inspeção de VM reforça que o problema não era falta simples de CPU/memória; havia custo alto de log shipping nas aéreas.</h2>
+          <div class="evidence-row">
+            <div class="evidence">
+              <div class="big">40%-55%</div>
+              <div class="small">Faixa típica de CPU nas APIs aéreas depois de estabilizar; memória com folga e swap em zero nas VMs inspecionadas.</div>
             </div>
-            <div>
-              <div class="code">shouldAllowAnotherRequeue(orderId)
-  se deadline ausente -> cria janela
-  se race/Redis não confirma -> loga warning
-  retorno: true
-
-Resultado operacional: falha aberta,
-permitindo requeue.</div>
-              <div class="callout light">
-                <strong>Interpretação:</strong> isso pode gerar reprocessamento e disputar MySQL/Redis/fila com operações reais de reserva.
-              </div>
+            <div class="evidence warn">
+              <div class="big">~1 core</div>
+              <div class="small"><code>fluent-bit</code> legado consumindo perto de um core e 3,6-4,0GB RSS em VMs aéreas.</div>
+            </div>
+            <div class="evidence hot">
+              <div class="big">1,6GB+</div>
+              <div class="small">Arquivos <code>ZupperLog_ResponseBuilderHelper_20260517.log</code> por VM aérea, com volume alto de log.</div>
+            </div>
+          </div>
+          <div class="three-col">
+            <div class="panel">
+              <h3>Sobreposição de coleta</h3>
+              <p>O container <code>api_v14</code> ainda tinha fluent-bit tailando logs enquanto Alloy também coletava os mesmos caminhos.</p>
+            </div>
+            <div class="panel">
+              <h3>Sem ação disruptiva</h3>
+              <p>Não houve restart de aplicação, VM ou collector. Acesso em VM foi somente leitura e discovery.</p>
+            </div>
+            <div class="panel">
+              <h3>Impacto provável</h3>
+              <p>Log storm e coleta duplicada podem amplificar CPU/IO/log volume, mas não explicam sozinhos a queda inicial de vendas.</p>
             </div>
           </div>
         </div>
-        <div class="source">LogQL: channel=ReservationQueueRetryLimiter; inspeção read-only do código.</div>
+        <div class="source">Discovery SSH readonly em VMs aéreas/hotel/app e métricas node/Beyla no Mimir.</div>
       </section>
 
-      <!-- 06 — ações recomendadas: matrix -->
-      <section class="slide">
+      <section class="slide layout-thesis-evidence dark">
+        <img class="logo on-dark" src="assets/elven-logo.png" alt="Elven" />
+        <div class="content">
+          <div class="kicker">Causalidade provável</div>
+          <h2>O incidente tem três camadas: queda de funil, autenticação Google e falha de credencial SABRE no DSG.</h2>
+          <div class="diagram">
+            <div class="node">
+              <h3>1. Queda do funil</h3>
+              <p>Vendas e reservas caem desde a manhã, antes do spike massivo de Google.</p>
+            </div>
+            <div class="arrow">+</div>
+            <div class="node">
+              <h3>2. Google Unauthorized</h3>
+              <p>Token/header do consumidor Google parece inválido, gerando tempestade de <code>LoginError</code>.</p>
+            </div>
+            <div class="arrow">+</div>
+            <div class="node">
+              <h3>3. DSG/SABRE</h3>
+              <p>DSG informa ausência/invalidade de credencial para filtro SABRE, afetando disponibilidade aérea.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <div>
+              <h3>O que eu cravaria agora</h3>
+              <p class="light-sub">Validar imediatamente token/secret do Google Flights e o mapeamento SABRE no DSG. Estes são os dois alvos com maior evidência.</p>
+            </div>
+            <div>
+              <h3>O que ainda falta fechar</h3>
+              <p class="light-sub">Confirmar se houve rotação/mudança de credencial perto de 08:15 BRT e se a queda 06h-08h veio de DSG, busca aérea ou campanha/canal.</p>
+            </div>
+          </div>
+        </div>
+        <div class="source">Confiança alta para correlação por negócio + logs; causa final depende de validar alterações operacionais.</div>
+      </section>
+
+      <section class="slide layout-closing">
         <img class="logo" src="assets/elven-logo.png" alt="Elven" />
         <div class="content">
           <div class="kicker">Ações recomendadas</div>
-          <h2>O próximo passo é fechar a causalidade e reduzir os três riscos que ficaram visíveis.</h2>
+          <h2>Prioridade é recuperar o canal Google, corrigir SABRE no DSG e conter o log storm sem mexer às cegas na aplicação.</h2>
           <div class="matrix">
             <div class="matrix-row matrix-head">
               <div>Prazo</div>
@@ -197,53 +246,73 @@ permitindo requeue.</div>
             </div>
             <div class="matrix-row">
               <div><strong>Agora</strong></div>
-              <div>Confirmar se houve deploy, correção de dados ou ação manual entre 13:45 e 14:05 BRT.</div>
-              <div>Erro fatal some na janela de recuperação.</div>
-              <div class="risk high">Fecha causalidade com o cliente.</div>
+              <div>Validar/rotacionar token ou API key usada pelo <code>Google-Flights-Search-Spackle</code> e conferir o header Authorization.</div>
+              <div>100.524 eventos Google na última hora; 49.829 LoginErrors Google nos últimos 30min.</div>
+              <div class="risk high">Recuperar canal <code>ZP_GFS</code>.</div>
+            </div>
+            <div class="matrix-row">
+              <div><strong>Agora</strong></div>
+              <div>Validar credencial/source <code>SABRE</code> dentro do DSG e filtros de cias usados no fluxo de disponibilidade.</div>
+              <div>63.442 eventos <code>Cias do filtro:SABRE</code> em 6h.</div>
+              <div class="risk high">Reduzir falha aérea downstream.</div>
             </div>
             <div class="matrix-row">
               <div><strong>24h</strong></div>
-              <div>Corrigir tratamento de <span class="mono">payment_form_id</span> nulo e validar pedidos aéreos.</div>
-              <div><span class="mono">verifyPaymentFormByOrderId</span> retornando nulo onde o contrato espera string.</div>
-              <div class="risk high">Remove bloqueio de funil.</div>
+              <div>Adicionar mitigação de rate-limit/bloqueio temporário para Unauthorized massivo no edge/API.</div>
+              <div>Spike de logs começa 08:15 e escala para 26k/15min.</div>
+              <div class="risk med">Proteger API e banco de ruído.</div>
             </div>
             <div class="matrix-row">
-              <div><strong>24h-48h</strong></div>
-              <div>Revisar o retry limiter para não falhar aberto sem limite e auditar a fila de reserva.</div>
-              <div>~15k-17k warnings/h sustentados.</div>
-              <div class="risk med">Reduz tempestade de reprocessamento.</div>
-            </div>
-            <div class="matrix-row">
-              <div><strong>48h-72h</strong></div>
-              <div>Investigar disco MySQL periódico e otimizar queries top de rows examined.</div>
-              <div>Disk busy ~90% recorrente; MYSQL-02 >500k rows/s.</div>
-              <div class="risk med">Reduz latência e aumenta margem do banco.</div>
+              <div><strong>48h</strong></div>
+              <div>Criar/validar alertas de queda por canal: <code>ZP_GFS</code>, DSG/SABRE, LoginError Google e conexões MySQL.</div>
+              <div>Queda de negócio detectável por SQL e logs antes de virar crise.</div>
+              <div class="risk low">Prevenir repetição.</div>
             </div>
           </div>
         </div>
-        <div class="source">Alertas preventivos criados para HTTP, logs, Beyla, VM, MySQL e Redis no Grafana-managed alerting.</div>
+        <div class="source">Apêndice técnico e queries reproduzíveis em source-notes.md no mesmo diretório.</div>
       </section>
-
     </main>
 
     <script src="elven-deck-charts.js"></script>
     <script>
-      var HOURS = ["20","21","22","23","00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20"];
-      var XTICKS = [0, 4, 8, 12, 14, 18, 24];
-      var verify = [5,2,6,26,1,0,0,1,0,0,0,2,0,0,1,4,3,8,13,0,0,0,0,2,5];
-      var paymentCritical = [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,4,0,0,1,0,0,0];
-      var retry = [23,32,54,45,32,7,5,5,4,6,1,3,6,7,540,15095,15558,16119,15931,16855,16690,16740,16922,16940,16797];
+      var data = {
+        hours: ["00","01","02","03","04","05","06","07","08","09","10","11"],
+        q15: ["06:00","06:15","06:30","06:45","07:00","07:15","07:30","07:45","08:00","08:15","08:30","08:45","09:00","09:15","09:30","09:45","10:00","10:15","10:30","10:45","11:00","11:15"],
+        ordersToday: [93,50,30,16,13,15,12,27,32,97,147,32],
+        ordersYesterday: [143,63,41,23,14,19,32,92,94,162,226,63],
+        airToday: [121,61,41,18,18,18,14,26,43,127,187,38],
+        airYesterday: [182,84,65,34,16,28,46,126,116,206,285,76],
+        google: [76,65,81,138,103,139,116,224,216,3520,3320,4586,5261,16996,18901,20163,21638,23784,24896,25826,26319,22621],
+        login: [82,70,89,150,107,159,144,266,255,3581,3370,4627,5332,17229,18942,20245,21715,23882,25052,25873,26422,22980]
+      };
 
       function renderCharts() {
-        ElvenDeck.lineChart(document.getElementById("chart-critical"), [
-          { name: "verifyPayment", data: verify, color: ElvenDeck.colors.red },
-          { name: "Payment CRITICAL", data: paymentCritical, color: ElvenDeck.colors.violet }
-        ], { labels: HOURS, xticks: XTICKS, max: 28 });
-
-        ElvenDeck.barChart(document.getElementById("chart-retry"),
-          { data: retry, color: ElvenDeck.colors.amber },
-          { labels: HOURS, xticks: XTICKS, max: 18000, hot: 10000 });
+        var C = window.ElvenDeck;
+        if (!C) return;
+        document.querySelectorAll("[data-chart]").forEach(function (el) {
+          var name = el.dataset.chart;
+          if (name === "orders") {
+            C.groupedBars(el, data.hours, [
+              { name: "hoje", data: data.ordersToday, color: C.colors.red },
+              { name: "ontem", data: data.ordersYesterday, color: C.colors.teal }
+            ]);
+          }
+          if (name === "air") {
+            C.groupedBars(el, data.hours, [
+              { name: "hoje", data: data.airToday, color: C.colors.red },
+              { name: "ontem", data: data.airYesterday, color: C.colors.teal }
+            ]);
+          }
+          if (name === "google") {
+            C.lineChart(el, [
+              { name: "Google", data: data.google, color: C.colors.lime, width: 3 },
+              { name: "LoginError", data: data.login, color: C.colors.red, width: 3 }
+            ], { labels: data.q15, markIndex: 9, markLabel: "08:15", labelCount: 7, hideEndLabels: true });
+          }
+        });
       }
+      window.renderCharts = renderCharts;
       window.addEventListener("load", renderCharts);
       window.addEventListener("resize", renderCharts);
     </script>
