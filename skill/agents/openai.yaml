@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elven Decks"
+  short_description: "Decks executivos e relatórios técnicos A4 da Elven"
+  default_prompt: "Use $elven-decks-skill para produzir o material Elven no perfil executivo ou técnico adequado ao leitor."

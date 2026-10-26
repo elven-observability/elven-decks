@@ -1,7 +1,7 @@
 {
   "name": "@elven-observability/decks-skill",
-  "version": "0.1.2",
-  "description": "Anthropic skill-creator pack codifying Elven Works presentation deck standards: 2 canonical deck types (client-report, workshop-mentorship), 12 locked layouts, binary lint, and Puppeteer PDF+preview rendering. Sibling of @elven-observability/docs-skill.",
+  "version": "0.2.0",
+  "description": "Elven Works executive decks and technical A4 reports for Codex and Claude Code, with PDF, editable DOCX, quality gates and versioned updates.",
   "license": "MIT",
   "author": "Elven Works <docs@elven.works>",
   "homepage": "https://github.com/elven-observability/elven-decks#readme",
@@ -20,21 +20,34 @@
     "skill/",
     "README.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "lib/",
+    "scripts/verify-package.js",
+    "scripts/prepare-fonts.py"
   ],
   "scripts": {
-    "test": "bash tests/lint.test.sh && bash tests/render-pdf.test.sh && bash tests/preview.test.sh",
+    "test": "npm run test:unit && npm run test:lint && npm run test:render && npm run test:preview && npm run test:integration",
     "test:lint": "bash tests/lint.test.sh",
     "test:render": "bash tests/render-pdf.test.sh",
     "test:preview": "bash tests/preview.test.sh",
-    "prepack": "chmod +x bin/decks-skill.js skill/scripts/lint.sh"
+    "prepack": "node scripts/verify-package.js",
+    "sync:assets": "node scripts/sync-assets.js",
+    "test:unit": "node --test --test-concurrency=1 tests/core.test.js",
+    "release:check": "npm test && npm pack --dry-run",
+    "test:integration": "node --test tests/integration.test.js",
+    "test:package": "node scripts/package-smoke.js",
+    "format:check": "prettier --check \"bin/*.js\" \"lib/*.js\" \"scripts/*.js\" \"tests/*.js\""
   },
   "dependencies": {
-    "marked": "^14.1.0",
-    "puppeteer": "^23.5.0"
+    "docx": "^9.14.0",
+    "image-size": "^2.0.4",
+    "marked": "^18.1.2",
+    "parse5": "^8.0.0",
+    "puppeteer": "^25.16.0",
+    "entities": "^6.0.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.12.0"
   },
   "publishConfig": {
     "access": "public"
@@ -52,6 +65,17 @@
     "lint",
     "html",
     "pdf",
-    "puppeteer"
-  ]
+    "puppeteer",
+    "codex",
+    "technical-report",
+    "a4",
+    "docx"
+  ],
+  "devDependencies": {
+    "@fontsource/ibm-plex-mono": "5.2.7",
+    "@fontsource/inter": "5.3.0",
+    "jszip": "3.10.1",
+    "pdf-lib": "1.17.1",
+    "prettier": "^3.9.10"
+  }
 }

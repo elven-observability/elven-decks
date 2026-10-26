@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/elven-observability/elven-decks/main/skill/reference/report.schema.json",
+  "title": "Elven technical report metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "profile", "kind", "title", "client", "author", "date", "version", "classification", "status", "source"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schemaVersion": {"const": 1},
+    "profile": {"const": "technical-report"},
+    "kind": {"enum": ["analysis", "runbook", "rfc"]},
+    "title": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "subtitle": {"type": "string"},
+    "client": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "author": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "date": {"type": "string", "format": "date", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "version": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "classification": {"enum": ["public", "internal", "confidential"]},
+    "status": {"enum": ["draft", "final"]},
+    "source": {"type": "string", "minLength": 1, "description": "Relative local Markdown file contained in the report directory"}
+  }
+}

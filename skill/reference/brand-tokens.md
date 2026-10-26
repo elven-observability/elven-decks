@@ -1,6 +1,8 @@
 # Brand tokens (locked)
 
-Tokens **imutáveis** do tema. Vivem em `themes/elven-deck.css` no `:root`. Drift de cor/fonte falha o lint (regra L3).
+Tokens canônicos do tema executivo. Vivem em `themes/elven-deck.css` no `:root`.
+O lint confirma presença do tema; revisão visual e sincronização de assets
+detectam drift que a estrutura não cobre. No técnico, use `elven-technical.css`.
 
 **Fonte canônica**: extraído verbatim do deck aprovado `kontik-zupper-incident-24h.html` — entregue a cliente real. Não foi inventado.
 
@@ -11,7 +13,6 @@ Tokens **imutáveis** do tema. Vivem em `themes/elven-deck.css` no `:root`. Drif
 | Token | Valor | Uso |
 |---|---|---|
 | `--ink` | `#0f1923` | texto principal; fundo de `slide dark` |
-| `--ink-2` | `#142638` | variante do ink (raro) |
 | `--paper` | `#f4f7f8` | fundo do slide light (padrão) |
 | `--white` | `#ffffff` | fundo de card; texto sobre dark |
 | `--muted` | `#64748b` | metadata, numeração, `.source` |
@@ -36,21 +37,23 @@ Tokens **imutáveis** do tema. Vivem em `themes/elven-deck.css` no `:root`. Drif
 --font-mono: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
 ```
 
-System fallback intencional — sem `@font-face`. Inter e IBM Plex Mono são free; self-host é roadmap se algum cliente exigir lockdown de rede.
+Fontes locais via `fonts.css` e `themes/fonts/`, incluídas no pacote com licenças
+OFL. O PDF incorpora as fontes carregadas e o DOCX técnico incorpora faces
+TrueType. Não depende de download externo durante a renderização.
 
 **Tamanhos canônicos** (no CSS — não improvise):
 
 | Elemento | Tamanho | Peso |
 |---|---|---|
-| `h1` (capa) | 68px | 900 |
-| `h2` (demais) | 42px | 900 |
+| `h1` (capa) | 62px | 900 |
+| `h2` (demais) | 40px | 900 |
 | `h3` (card) | 20px | 850 |
-| `.sub` | 22px | 400 |
+| `.sub` | 21px | 400 |
 | `.light-sub` | 18px | 400 |
 | `.kicker` | 12px | 800, letter-spacing 3px |
 | `.metric .value` | 34px | 900 |
-| `.evidence .big` / `.tl-time` | 30 / 26px | 900 |
-| `.code` / `.mono` | 12px / 0.9em | mono |
+| `.evidence .big` / `.tl-time` | 29 / 25px | 900 |
+| `.code` / `.mono` | 14px / 0.9em | mono |
 | `.source` | 10px | 400 |
 
 ---
@@ -80,7 +83,6 @@ Formato `01, 02 … 99`, canto inferior direito. Cor `--muted` em light, branco 
 | `slide` | `--paper` | `--ink` | padrão — maioria dos slides |
 | `slide dark` | `#0f1923` | branco | timeline, diagrama, fechamento de impacto |
 | `slide cover` | gradiente teal→blue + radiais | branco | slide 01 SEMPRE |
-| `slide split-dark` | 48/52 dark→paper | misto | comparação lado a lado (raro) |
 
 ---
 

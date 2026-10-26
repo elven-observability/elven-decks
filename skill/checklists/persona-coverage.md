@@ -52,6 +52,14 @@ Sanity-check: o deck está endereçando o **leitor certo**? Use antes do pre-del
 ### `agente-ia`
 
 - [ ] HTML segue padrão lintável (10/10)?
-- [ ] Layouts são da library de 12 canônicos?
+- [ ] Composição usa componentes e receitas canônicas?
 - [ ] Componentes atômicos usam vocabulário do `component-catalog.md`?
 - [ ] Sem emoji no body, sem layout inventado?
+
+## Perfil técnico
+
+`technical-report` atende primariamente `cliente-eng` e `cliente-sre`. Use
+`kind: analysis`, `runbook` ou `rfc` conforme a tarefa. Para stakeholders, gere
+um executivo companheiro se solicitado. O técnico deve permitir localizar a
+conclusão, verificar a evidência, reproduzir os passos e acompanhar as ações.
+PDF e DOCX precisam de revisão visual em todas as páginas.

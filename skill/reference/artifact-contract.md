@@ -1,4 +1,11 @@
-# Artifact contract
+# Contrato de artefatos
+
+A versão 0.2 adiciona o perfil `technical-report` aos tipos de slide abaixo.
+Para documento técnico A4, siga [technical-report](technical-report.md):
+`report.json` + `report.md` + `source-notes.md` + `qa-notes.md`, gerando HTML,
+PDF, DOCX e manifesto com `decks-skill build`. Não aplique as exigências de
+moldura de slide a documentos técnicos.
+
 
 O que cada tipo de deck entrega como pacote. Lint estrutural cobre o HTML; este doc cobre o conjunto.
 

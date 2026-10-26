@@ -133,11 +133,11 @@ Cobertura: o dia inteiro, costurando todas as speaker notes.
 
 ---
 
-## Como o lint trata speaker notes em v0.1
+## Como o lint trata speaker notes na versão atual
 
-Lint binário v0.1.0 **não inspeciona speaker notes** ainda — só o HTML do deck. Validação manual via `quality-gate.md` G4.
+O lint estrutural de slides **não inspeciona speaker notes** ainda — só o HTML do deck. Validação manual via `quality-gate.md` G4.
 
-Roadmap pós-v0.1: lint de speaker notes (markdownlint custom rule) que checa as 4 seções obrigatórias. Issue: rastreamento futuro.
+Evolução futura: lint de speaker notes (markdownlint custom rule) que checa as 4 seções obrigatórias. Issue: rastreamento futuro.
 
 ---
 
