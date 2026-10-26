@@ -1,0 +1,38 @@
+[
+  {
+    "source": "inter-latin-400-normal.woff2",
+    "sourceSha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc",
+    "file": "inter-latin-400-normal.ttf",
+    "sha256": "ea8380d976ea3fc1791e61eb1876f092bdd680a3925ec4fb1df27275c35f7fd5"
+  },
+  {
+    "source": "inter-latin-700-normal.woff2",
+    "sourceSha256": "6f56409fd3d64bb85f7d070bce20749db2d66b6d63cec586cc22d1c761be2491",
+    "file": "inter-latin-700-normal.ttf",
+    "sha256": "9732906df67153147e6ae54d9cd0cd935dc493465a29b41003b5923d510d1d47"
+  },
+  {
+    "source": "inter-latin-400-italic.woff2",
+    "sourceSha256": "7ea9d2f1274cebee837f0c6eebb426c18fbb2333a6b6da4d02ec5cf47db7fb8e",
+    "file": "inter-latin-400-italic.ttf",
+    "sha256": "0ff77f5640b6a78cc8ab77b2271d9f43485b0f786d63fc656a11e39da263f613"
+  },
+  {
+    "source": "inter-latin-700-italic.woff2",
+    "sourceSha256": "facd8f930c88e4bf79be48afe46671c9dd72f82cf5f4311acc84a48e616ea169",
+    "file": "inter-latin-700-italic.ttf",
+    "sha256": "9f09aae62aa5394e3ff5c052d8737bc5e81c9186d7a0eec79c65f34decb5ff45"
+  },
+  {
+    "source": "ibm-plex-mono-latin-400-normal.woff2",
+    "sourceSha256": "08949f728dc52d528e69b1667d15c89a5686a4ee9a296ff90983985f99c380f7",
+    "file": "ibm-plex-mono-latin-400-normal.ttf",
+    "sha256": "3135faa2c385057705d1443bd02553a319cf62b71187c0f728171807023f5405"
+  },
+  {
+    "source": "ibm-plex-mono-latin-700-normal.woff2",
+    "sourceSha256": "4f84d86cfd060f4ded334358ff8a4c81d4db2ed5addd568359d693f44a87765a",
+    "file": "ibm-plex-mono-latin-700-normal.ttf",
+    "sha256": "95436c89e86a5dc8fd05dee3dbc26c942cea6f77ed8849c5eae7b00f62fffc28"
+  }
+]

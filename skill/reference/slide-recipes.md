@@ -1,6 +1,6 @@
 # Slide recipes
 
-Combinações de componentes **testadas** — extraídas do deck aprovado `kontik-zupper-incident-24h`. Não há "layout fixo": cada slide é uma variante (`light`/`dark`/`cover`/`split-dark`) com `.content`, e dentro dela você compõe. Estas receitas são pontos de partida confiáveis.
+Combinações de componentes **testadas** — extraídas do deck aprovado `kontik-zupper-incident-24h`. Não há "layout fixo": cada slide é uma variante (`light`/`dark`/`cover`) com `.content`, e dentro dela você compõe. Estas receitas são pontos de partida confiáveis.
 
 Toda receita assume a moldura obrigatória (lint L6-L9):
 
@@ -232,7 +232,6 @@ Defina os dados em `renderCharts()` (ver Passo 6 do SKILL.md).
 | Light | `slide` | padrão — maioria dos slides |
 | Dark | `slide dark` | timeline, diagrama, fechamento de impacto |
 | Cover | `slide cover` | sempre o slide 01 (gradiente) |
-| Split | `slide split-dark` | comparação lado a lado dark/light (raro) |
 
 ## Regras gerais
 

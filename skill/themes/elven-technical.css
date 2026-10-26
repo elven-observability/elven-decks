@@ -1,0 +1,39 @@
+/* Elven technical reports: A4 portrait, flowing text, shared brand. */
+:root { --ink:#0f1923; --teal:#00695c; --muted:#526273; --paper:#f4f7f8; }
+* { box-sizing:border-box; }
+html { font-family:Inter,Arial,sans-serif; color:var(--ink); font-size:11pt; line-height:1.5; background:#e6ecef; }
+body { margin:0; }
+main { max-width:210mm; margin:24px auto; padding:20mm; background:#fff; }
+.report-header img { width:110px; height:auto; margin-bottom:18px; }
+.eyebrow { font-size:8pt; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--teal); }
+h1 { font-size:26pt; line-height:1.15; letter-spacing:-.03em; margin:12px 0 16px; }
+.subtitle { font-size:12pt; color:var(--muted); }
+dl { display:grid; grid-template-columns:1fr 1fr; gap:14px 24px; margin:24px 0; }
+dt { font-size:8pt; color:var(--muted); }
+dd { margin:2px 0 0; font-size:10pt; }
+nav { padding:16px 20px; margin:26px 0; background:var(--paper); }
+nav ol { columns:2; padding-left:20px; font-size:9pt; }
+nav li { break-inside:avoid; margin:5px 0; }
+h2 { font-size:15pt; line-height:1.25; color:var(--teal); margin:24pt 0 10pt; break-after:avoid; }
+h3 { font-size:12.5pt; margin:18pt 0 8pt; break-after:avoid; }
+h4 { font-size:11pt; margin:14pt 0 6pt; break-after:avoid; }
+p, li { orphans:3; widows:3; }
+p { margin:0 0 10pt; }
+li { margin-bottom:5pt; }
+a { color:var(--teal); text-decoration:underline; overflow-wrap:anywhere; }
+code { font-family:"IBM Plex Mono",monospace; font-size:.85em; overflow-wrap:anywhere; background:#eff3f5; padding:1px 3px; }
+pre { background:#eff3f5; padding:12pt; white-space:pre-wrap; overflow-wrap:anywhere; font-size:9pt; line-height:1.4; }
+pre code { background:none; padding:0; font-size:inherit; }
+blockquote { margin:12pt 0; padding:10pt 14pt; border-left:3px solid #00897b; background:#eaf7f4; }
+blockquote p:last-child { margin:0; }
+table { width:100%; border-collapse:collapse; font-size:9pt; margin:12pt 0 18pt; table-layout:fixed; }
+thead { display:table-header-group; }
+tr { break-inside:avoid; }
+th,td { padding:8pt; border:1px solid #d4dfe3; text-align:left; vertical-align:top; overflow-wrap:anywhere; }
+th { background:#eaf7f4; font-weight:700; }
+figure { margin:16pt 0; break-inside:avoid; }
+figure img { max-width:100%; max-height:230mm; height:auto; }
+figcaption { font-size:9pt; color:var(--muted); margin-top:6pt; }
+@page { size:A4 portrait; margin:20mm; }
+@media print { html { background:#fff; } main { max-width:none; margin:0; padding:0; } nav { break-inside:avoid; } }
+@media screen and (max-width:800px) { main { margin:0; padding:24px; } nav ol { columns:1; } dl { grid-template-columns:1fr; } }

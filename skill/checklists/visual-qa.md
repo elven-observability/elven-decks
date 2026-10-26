@@ -64,3 +64,6 @@ Roda **DEPOIS de `decks-skill preview`** com o `contact-sheet.png` aberto. Não 
 
 - [ ] Slide title bate com filename de speaker note (`Slide 01 — Capa` ↔ `01-capa.md`)
 - [ ] Contagem de slides do HTML ↔ contagem de arquivos em `materials/speaker-notes/day-X/`
+
+Para o perfil técnico A4, revise todas as páginas do PDF e do DOCX conforme
+`reference/technical-report.md`; este checklist de slides não se aplica.

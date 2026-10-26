@@ -1,93 +1,22 @@
 #!/usr/bin/env node
-/**
- * @elven-observability/decks-skill — render-deck
- *
- * Renders an Elven deck HTML file to PDF using Puppeteer.
- * Output: 1280x720, 1 page per slide, print backgrounds, zero margin.
- *
- * Usage:
- *   render-deck.js <deck.html> [--out <out.pdf>]
- */
-
 "use strict";
-
 const fs = require("node:fs");
 const path = require("node:path");
-
-function parseArgs(argv) {
-  const args = argv.slice(2);
-  if (args.length === 0 || args[0] === "--help" || args[0] === "-h") {
-    process.stdout.write(
-      "Usage: render-deck.js <deck.html> [--out <out.pdf>]\n"
-    );
-    process.exit(0);
-  }
-  const input = args[0];
-  let out = input.replace(/\.html?$/i, ".pdf");
-  const outIdx = args.indexOf("--out");
-  if (outIdx !== -1 && args[outIdx + 1]) {
-    out = args[outIdx + 1];
-  }
-  return { input: path.resolve(input), out: path.resolve(out) };
-}
-
+const { parseArgs } = require("node:util");
 async function main() {
-  const { input, out } = parseArgs(process.argv);
-
-  if (!fs.existsSync(input)) {
-    process.stderr.write(`Error: ${input} not found\n`);
-    process.exit(1);
-  }
-
-  let puppeteer;
-  try {
-    puppeteer = require("puppeteer");
-  } catch (err) {
-    process.stderr.write(
-      "Error: puppeteer not installed. Run `npm install` in the package root.\n"
-    );
-    process.exit(1);
-  }
-
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--font-render-hinting=none"],
-  });
-
-  try {
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1280, height: 720, deviceScaleFactor: 2 });
-    await page.goto(`file://${input}`, {
-      waitUntil: "networkidle0",
-      timeout: 30000,
-    });
-
-    // Charts are data-driven (elven-deck-charts.js). Force a re-render once
-    // layout is settled, then give the SVG a beat to paint.
-    await page.evaluate(() => {
-      if (typeof window.renderCharts === "function") window.renderCharts();
-    });
-    await new Promise((r) => setTimeout(r, 350));
-
+  const { values, positionals } = parseArgs({ options:{out:{type:"string"}},allowPositionals:true });
+  if (positionals.length!==1 || !/\.html?$/i.test(positionals[0])) throw new Error("Uso: decks-skill render <deck.html> [--out <arquivo.pdf>]");
+  const input = path.resolve(positionals[0]);
+  const out = path.resolve(values.out || input.replace(/\.html?$/i,".pdf"));
+  if (!/\.pdf$/i.test(out) || out===input) throw new Error("A saída deve ser um PDF distinto da fonte");
+  require("../../lib/deck-lint").lintDeck(input);
+  await require("../../lib/browser").withPage(input, async page => {
     await page.emulateMediaType("print");
-
-    await page.pdf({
-      path: out,
-      width: "1280px",
-      height: "720px",
-      printBackground: true,
-      preferCSSPageSize: false,
-      margin: { top: 0, right: 0, bottom: 0, left: 0 },
-    });
-
-    const size = fs.statSync(out).size;
-    process.stdout.write(`PDF written: ${out} (${size} bytes)\n`);
-  } finally {
-    await browser.close();
-  }
+    // Screen gaps must not create extra PDF pages.
+    await page.addStyleTag({content:"html,body{margin:0!important;padding:0!important}.slide{margin:0!important;break-after:page}.slide:last-child{break-after:auto}"});
+    fs.mkdirSync(path.dirname(out),{recursive:true});
+    await page.pdf({path:out,width:"1280px",height:"720px",printBackground:true,margin:{top:0,right:0,bottom:0,left:0}});
+  });
+  console.log(`PDF: ${out} (${fs.statSync(out).size} bytes)`);
 }
-
-main().catch((err) => {
-  process.stderr.write(`Render failed: ${err && err.message ? err.message : err}\n`);
-  process.exit(1);
-});
+main().catch(error=>{console.error(`Render failed: ${error.message}`);process.exitCode=1;});

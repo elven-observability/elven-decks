@@ -4,12 +4,15 @@ Lint binário (10/10) é gate **estrutural**. Estes 6 gates são **qualitativos*
 
 ---
 
+Para documentos A4, use os gates de `technical-report.md`; as regras a seguir
+se aplicam aos slides.
+
 ## G1 — Identidade visual
 
 Abra o PDF rendered lado-a-lado com a referência canônica:
 
 - **Client-report**: `kontik-zupper-incident-2026-05-08/kontik-zupper-incident-24h.pdf`
-- **Workshop**: qualquer dia válido de `Mentoring/html-slides/day-*.html` (após migração visual; v0.1.0 ainda usa CSS antigo do workshop)
+- **Workshop**: qualquer dia válido de `Mentoring/html-slides/day-*.html`
 
 Checagens olho-no-olho:
 
@@ -100,9 +103,9 @@ Só termine quando tudo passa.
 
 Antes de mandar:
 
-1. Lint 10/10 ✅
+1. Lint 10/10 e check de assets/geometria ✅
 2. Preview contact-sheet revisado ✅
 3. `pre-deliver.md` batido item a item ✅
-4. PDF aberto em Preview.app **e** Adobe Reader (compatibilidade) ✅
+4. PDF revisado em um renderer/viewer disponível, sem alegar teste em outro ✅
 5. Cliente/data/janela conferidos em `source-notes.md` ✅
 6. (Workshop) script teleprompter lido em voz alta pelo menos 1 vez ✅

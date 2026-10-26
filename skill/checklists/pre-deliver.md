@@ -1,4 +1,6 @@
-# Pre-deliver checklist
+# Pre-deliver checklist — executivo e workshop
+
+Para técnico, use o `qa-notes.md` do scaffold e `reference/technical-report.md`.
 
 Antes de mandar ao cliente / palco. Bata item a item, sem pular. Se algum item não bate, **não termine**.
 
@@ -38,8 +40,7 @@ Antes de mandar ao cliente / palco. Bata item a item, sem pular. Se algum item n
 
 - [ ] `decks-skill lint <deck>.html` retorna `10/10` exit 0
 - [ ] `decks-skill render` produz PDF sem erro
-- [ ] PDF abre limpo em Preview.app (macOS)
-- [ ] PDF abre limpo em Adobe Reader (Windows/cliente)
+- [ ] PDF revisado em renderer/viewer disponível, registrando qual foi usado
 - [ ] Nome do arquivo PDF segue convenção `<slug>.pdf`
 
 ## Companion artifacts (workshop)
@@ -61,8 +62,8 @@ Antes de mandar ao cliente / palco. Bata item a item, sem pular. Se algum item n
 
 - [ ] PDF nomeado corretamente (sem espaços, kebab-case, com data se relevante)
 - [ ] Pasta de entrega zipada se for mandar via canal externo
-- [ ] Cliente notificado (email/Slack) com link ou anexo
-- [ ] (Workshop) Participantes notificados com participant-pack 24h antes
+- [ ] Se o pedido autorizar notificação: cliente recebe o link/anexo
+- [ ] (Workshop) Plano de distribuição do participant-pack definido; envio só se autorizado
 
 ## Gate final
 

@@ -7,6 +7,46 @@ Versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-10-26
+
+### Added
+
+- Perfil técnico A4 vertical com fonte Markdown + metadados versionados, tipos
+  analysis/runbook/rfc, HTML autônomo, PDF e DOCX editável, sumário com links,
+  tabelas com cabeçalho repetido, código e figuras PNG/JPEG incorporadas.
+- `build`, `check` e `doctor`; alias `new executive` preservando `client-report`.
+- Instalação para Codex e Claude Code, escopo de projeto para ambientes cloud,
+  recibo de versão, staging, backups e restauração em falhas de instalação.
+- Atualização por versão publicada/pin ou cópia offline; comando único por npx.
+- Fontes locais Inter e IBM Plex Mono com OFL, incorporadas no PDF e no DOCX,
+  verificação de checksums e helper de manutenção para conversão TrueType.
+- Schema de metadados, contratos por perfil, guias de manutenção e CI em
+  Node 22/24 com smoke de Windows e teste do tarball com dependências de produção.
+
+### Fixed
+
+- Lint por DOM valida elementos em cada slide, ambos os eixos do canvas e CSS
+  existente; arquivos ausentes e argumentos inválidos retornam falha.
+- PDF executivo remove os intervalos de tela, mantendo uma página por slide.
+- Render aguarda fontes, figuras e gráficos e reporta falhas de carregamento.
+- Componentes `.score-grid` e `.code`, já documentados, agora têm CSS;
+  texto de panels brancos em slides dark mantém contraste.
+- Logo normalizado para PNG real, preservando os pixels da imagem original.
+- Removidas referências à antiga biblioteca de 12 layouts e à variante
+  split-dark sem implementação. O modelo continua composição de componentes.
+
+### Migration
+
+- Node mínimo passa de 18 para **22.12**; Puppeteer e dependências atualizados.
+- `install` passa a atender os dois agentes por padrão; `--target claude`
+  mantém o destino anterior. Instalações Codex legadas são reutilizadas.
+- `update` passa a buscar a versão publicada; para o comportamento local
+  anterior use `update --from-installed`. CLI global atualiza via npm install -g.
+- Updater não modifica decks ou documentos existentes. Migração de um material
+  para novo tema exige regeneração e revisão visual próprias.
+- `.docx` é o formato Word suportado; não há exportação para `.doc` legado.
+
+
 ## [0.1.2] — 2026-05-17
 
 Correção de qualidade visual. O tema reconstruído na 0.1.1 saiu apertado e os

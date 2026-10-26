@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "profile": "technical-report",
+  "kind": "analysis",
+  "title": "Análise técnica do serviço de demonstração",
+  "subtitle": "Evidências e critérios para uma decisão operacional",
+  "client": "Cliente de demonstração",
+  "author": "Equipe Elven Works",
+  "date": "2026-10-26",
+  "version": "1.0",
+  "classification": "internal",
+  "status": "draft",
+  "source": "report.md"
+}

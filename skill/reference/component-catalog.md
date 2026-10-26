@@ -14,7 +14,6 @@ Todos os componentes do tema `elven-deck.css`. São combináveis livremente dent
 <section class="slide">          <!-- light, padrão -->
 <section class="slide dark">     <!-- fundo escuro -->
 <section class="slide cover">    <!-- gradiente, só slide 01 -->
-<section class="slide split-dark"><!-- metade dark / metade light -->
 ```
 
 Canvas fixo 1280×720. Numeração de página automática (canto inferior direito).
